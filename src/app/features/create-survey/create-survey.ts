@@ -30,8 +30,10 @@ export class CreateSurveyComponent {
     if (this.form.invalid || this.saving) { this.form.markAllAsTouched(); return; }
     this.saving = true;
     const value = this.form.getRawValue();
-    const result = await this.store.create({ title: value.title!, category: value.category!, description: value.description ?? '', endDate: value.endDate || null,
-      questions: value.questions.map((question) => ({ text: question.text!, answers: question.answers.filter((answer): answer is string => !!answer && answer.trim().length > 0) })) });
+    const result = await this.store.create({
+      title: value.title!, category: value.category!, description: value.description ?? '', endDate: value.endDate || null,
+      questions: value.questions.map((question) => ({ text: question.text!, answers: question.answers.filter((answer): answer is string => !!answer && answer.trim().length > 0) }))
+    });
     this.saving = false;
     if (result) this.published.emit();
   }

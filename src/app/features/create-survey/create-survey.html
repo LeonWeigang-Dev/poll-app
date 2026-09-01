@@ -1,28 +1,39 @@
 <div class="overlay" (click)="closed.emit()">
   <section class="modal" (click)="$event.stopPropagation()">
-    <div class="modal-head"><div><span class="badge">Draft</span><h1>Create new survey</h1></div><button type="button" (click)="closed.emit()">Cancel ×</button></div>
+    <div class="modal-head">
+      <div><span class="badge">Draft</span>
+        <h1>Create new survey</h1>
+      </div><button type="button" (click)="closed.emit()">Cancel ×</button>
+    </div>
     <form [formGroup]="form" (ngSubmit)="publish()">
       <div class="top-fields">
         <label>Survey name *<input formControlName="title" placeholder="Survey name"></label>
-        <label>Choose category *<select formControlName="category">@for (category of categories; track category) { <option>{{ category }}</option> }</select></label>
+        <label>Choose category *<select formControlName="category">@for (category of categories; track category) {
+            <option>{{ category }}</option> }</select></label>
         <label>Set end date <input type="date" formControlName="endDate"></label>
-        <label class="wide">Describing text (optional)<textarea formControlName="description" placeholder="Tell voters a little more about the survey."></textarea></label>
+        <label class="wide">Describing text (optional)<textarea formControlName="description"
+            placeholder="Tell voters a little more about the survey."></textarea></label>
       </div>
       <div formArrayName="questions" class="question-list">
         @for (question of questions.controls; track $index; let questionIndex = $index) {
-          <section class="question-card" [formGroupName]="questionIndex">
-            <div class="question-head"><span>{{ questionIndex + 1 }}. Question *</span><button type="button" (click)="removeQuestion(questionIndex)" [disabled]="questions.length === 1">×</button></div>
-            <input class="question-input" formControlName="text" placeholder="Which option would work best for you?">
-            <div class="answers" formArrayName="answers">
-              @for (answer of answerControls(questionIndex).controls; track $index; let answerIndex = $index) {
-                <label><span>{{ ['A','B','C','D','E'][answerIndex] }}</span><input [formControlName]="answerIndex" placeholder="Answer"><button type="button" (click)="removeAnswer(questionIndex, answerIndex)" [disabled]="answerControls(questionIndex).length <= 2">×</button></label>
-              }
-            </div>
-            <button class="ghost" type="button" (click)="addAnswer(questionIndex)">Add answer ⊕</button>
-          </section>
+        <section class="question-card" [formGroupName]="questionIndex">
+          <div class="question-head"><span>{{ questionIndex + 1 }}. Question *</span><button type="button"
+              (click)="removeQuestion(questionIndex)" [disabled]="questions.length === 1">×</button></div>
+          <input class="question-input" formControlName="text" placeholder="Which option would work best for you?">
+          <div class="answers" formArrayName="answers">
+            @for (answer of answerControls(questionIndex).controls; track $index; let answerIndex = $index) {
+            <label><span>{{ ['A','B','C','D','E'][answerIndex] }}</span><input [formControlName]="answerIndex"
+                placeholder="Answer"><button type="button" (click)="removeAnswer(questionIndex, answerIndex)"
+                [disabled]="answerControls(questionIndex).length <= 2">×</button></label>
+            }
+          </div>
+          <button class="ghost" type="button" (click)="addAnswer(questionIndex)">Add answer ⊕</button>
+        </section>
         }
       </div>
-      <div class="modal-foot"><button class="ghost" type="button" (click)="addQuestion()">Add next question ⊕</button><button class="publish" [disabled]="saving" type="submit">{{ saving ? 'Publishing…' : 'Publish ✓' }}</button></div>
+      <div class="modal-foot"><button class="ghost" type="button" (click)="addQuestion()">Add next question
+          ⊕</button><button class="publish" [disabled]="saving" type="submit">{{ saving ? 'Publishing…' : 'Publish ✓'
+          }}</button></div>
     </form>
   </section>
 </div>

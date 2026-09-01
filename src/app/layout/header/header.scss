@@ -1,3 +1,24 @@
-.header { display: flex; align-items: center; justify-content: space-between; width: min(1160px, calc(100% - 48px)); margin: 0 auto; padding: 22px 0; }
-.header img { width: 108px; height: auto; }
-@media (max-width: 700px) { .header { width: calc(100% - 28px); padding: 18px 0; } .header img { width: 92px; } }
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: min(1160px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 22px 0;
+}
+
+.header img {
+    width: 108px;
+    height: auto;
+}
+
+@media (max-width: 700px) {
+    .header {
+        width: calc(100% - 28px);
+        padding: 18px 0;
+    }
+
+    .header img {
+        width: 92px;
+    }
+}

@@ -11,10 +11,10 @@
   <section class="surveys">
     <h2>Your surveys</h2>
     @if (store.endingSoon().length && !store.showPast()) {
-      <div class="ending-head"><span>Ending soon surveys</span></div>
-      <div class="ending-grid">
-        @for (poll of store.endingSoon(); track poll.id) { <app-survey-card [poll]="poll" [highlight]="true" /> }
-      </div>
+    <div class="ending-head"><span>Ending soon surveys</span></div>
+    <div class="ending-grid">
+      @for (poll of store.endingSoon(); track poll.id) { <app-survey-card [poll]="poll" [highlight]="true" /> }
+    </div>
     }
 
     <div class="toolbar">
@@ -22,16 +22,18 @@
         <button [class.active]="!store.showPast()" (click)="store.setPast(false)">Active survey</button>
         <button [class.active]="store.showPast()" (click)="store.setPast(true)">Past survey</button>
       </div>
-      <app-category-filter [categories]="store.categories()" [selected]="store.selectedCategory()" (changed)="store.setCategory($event)" />
+      <app-category-filter [categories]="store.categories()" [selected]="store.selectedCategory()"
+        (changed)="store.setCategory($event)" />
     </div>
 
     @if (store.error()) { <p class="error">{{ store.error() }}</p> }
     @if (store.loading()) { <p class="loading">Loading surveys…</p> }
     @else if (!store.filteredPolls().length) { <p class="empty">No surveys found for this filter.</p> }
     @else {
-      <div class="survey-grid">
-        @for (poll of store.filteredPolls(); track poll.id) { <app-survey-card [poll]="poll" [past]="store.showPast()" /> }
-      </div>
+    <div class="survey-grid">
+      @for (poll of store.filteredPolls(); track poll.id) { <app-survey-card [poll]="poll" [past]="store.showPast()" />
+      }
+    </div>
     }
   </section>
 </div>

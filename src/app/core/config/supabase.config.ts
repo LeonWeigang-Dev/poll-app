@@ -1,8 +1,8 @@
 export const SUPABASE_CONFIG = {
-  url: 'https://YOUR-PROJECT.supabase.co',
-  anonKey: 'YOUR-ANON-KEY',
+  url: 'https://psdscbmovprvlzrqvquh.supabase.co',
+  anonKey: 'sb_publishable_VkiMJvh1-VGnjnwscMxZLA_O7JJVWXz',
 };
 
 export const isSupabaseConfigured = (): boolean =>
-  !SUPABASE_CONFIG.url.includes('YOUR-PROJECT') &&
-  !SUPABASE_CONFIG.anonKey.includes('YOUR-ANON-KEY');
+  !SUPABASE_CONFIG.url.includes('https://psdscbmovprvlzrqvquh.supabase.co') &&
+  !SUPABASE_CONFIG.anonKey.includes('sb_publishable_VkiMJvh1-VGnjnwscMxZLA_O7JJVWXz');

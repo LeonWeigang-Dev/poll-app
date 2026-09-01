@@ -1,2 +1,16 @@
-.filter { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #65596a; }
-select { border: 0; background: transparent; font: inherit; color: inherit; cursor: pointer; padding: 4px 0; }
+.filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #65596a;
+}
+
+select {
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    padding: 4px 0;
+}

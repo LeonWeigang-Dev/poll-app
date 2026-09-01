@@ -39,7 +39,7 @@ export class PollStoreService {
   }
 
   async vote(surveyId: string, questionId: string, optionId: string): Promise<boolean> {
-    try { await this.repo.vote(surveyId, questionId, optionId, this.voter.getId()); return true; }
+    try { this.addVoteLocally(surveyId, questionId, optionId); return true; }
     catch (error) { this.error.set(this.message(error)); return false; }
   }
 
@@ -50,9 +50,11 @@ export class PollStoreService {
   }
 
   private withAddedVote(poll: Poll, questionId: string, optionId: string): Poll {
-    return { ...poll, questions: poll.questions.map((question) => question.id !== questionId ? question : {
-      ...question, answers: question.answers.map((answer) => answer.id === optionId ? { ...answer, votes: answer.votes + 1 } : answer),
-    }) };
+    return {
+      ...poll, questions: poll.questions.map((question) => question.id !== questionId ? question : {
+        ...question, answers: question.answers.map((answer) => answer.id === optionId ? { ...answer, votes: answer.votes + 1 } : answer),
+      })
+    };
   }
 
   private matchesStatus(poll: Poll): boolean { return this.isPast(poll) === this.showPast(); }
