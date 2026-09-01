@@ -2,6 +2,10 @@ import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-header', standalone: true, imports: [RouterLink], templateUrl: './header.html', styleUrl: './header.scss'
+  selector: 'app-header',
+  standalone: true,
+  imports: [RouterLink],
+  templateUrl: './header.html',
+  styleUrl: './header.scss',
 })
 export class HeaderComponent { readonly dark = input(false); }

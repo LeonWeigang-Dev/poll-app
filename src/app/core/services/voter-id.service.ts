@@ -8,9 +8,7 @@ export class VoterIdService {
   getId(): string {
     const storedId = localStorage.getItem(this.voterKey);
     if (storedId) return storedId;
-    const newId = crypto.randomUUID();
-    localStorage.setItem(this.voterKey, newId);
-    return newId;
+    return this.createId();
   }
 
   hasVoted(surveyId: string): boolean {
@@ -19,6 +17,12 @@ export class VoterIdService {
 
   markVoted(surveyId: string): void {
     localStorage.setItem(this.voteKey(surveyId), 'true');
+  }
+
+  private createId(): string {
+    const id = crypto.randomUUID();
+    localStorage.setItem(this.voterKey, id);
+    return id;
   }
 
   private voteKey(surveyId: string): string {

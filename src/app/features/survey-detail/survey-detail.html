@@ -1,53 +1,46 @@
 <div class="detail-page">
   <div class="detail-top">
     <a routerLink="/" class="back">← Back to surveys</a>
-    <button routerLink="/" class="create">Create survey</button>
+    @if (poll() && !isPast() && !voted()) { <span class="status-chip">Open for voting</span> }
   </div>
 
   @if (loading()) {
-  <p class="state">Loading survey…</p>
+    <p class="state">Loading survey…</p>
   } @else if (error() && !poll()) {
-  <p class="error">{{ error() }}</p>
+    <p class="error">{{ error() }}</p>
   } @else if (!poll()) {
-  <p class="state">Survey not found.</p>
+    <p class="state">Survey not found.</p>
   } @else {
-  <section class="detail-grid">
-    <article class="survey-panel">
-      <div class="meta">
-        <span>{{ isPast() ? 'Published' : voted() ? 'Completed' : 'Published' }}</span>
-        <span>{{ poll()!.category }}</span>
-      </div>
-
-      <h1>{{ poll()!.title }}</h1>
-      @if (poll()!.description) {
-      <p class="description">{{ poll()!.description }}</p>
-      }
-
-      @for (question of poll()!.questions; track question.id; let index = $index) {
-      <section class="question">
-        <h2>{{ index + 1 }}. {{ question.text }}</h2>
-        <div class="options">
-          @for (answer of question.answers; track answer.id) {
-          <button type="button" [disabled]="isPast() || voted()"
-            [class.selected]="optionSelected(question.id, answer.id)" (click)="select(question.id, answer.id)">
-            <span class="dot">{{ answer.text.slice(0, 1) }}</span>{{ answer.text }}
-          </button>
-          }
+    <section class="detail-grid">
+      <article class="survey-panel">
+        <div class="meta">
+          <span class="status">{{ statusLabel() }}</span>
+          <span>{{ poll()!.category }}</span>
         </div>
-      </section>
-      }
+        <h1>{{ poll()!.title }}</h1>
+        @if (poll()!.description) { <p class="description">{{ poll()!.description }}</p> }
 
-      @if (error()) {
-      <p class="error submit-error">{{ error() }}</p>
-      }
+        <div class="deadline">Deadline: {{ poll()!.endDate ? (poll()!.endDate | date:'dd.MM.yyyy, HH:mm') : 'No deadline' }}</div>
 
-      <button class="complete" type="button" [disabled]="isPast() || voted() || saving() || !allQuestionsAnswered()"
-        (click)="submit()">
-        {{ isPast() ? 'Survey ended' : voted() ? 'Survey completed ✓' : saving() ? 'Submitting…' : 'Complete survey' }}
-      </button>
-    </article>
+        @for (question of poll()!.questions; track question.id; let index = $index) {
+          <section class="question">
+            <h2>{{ index + 1 }}. {{ question.text }}</h2>
+            <div class="options">
+              @for (answer of question.answers; track answer.id) {
+                <button type="button" [disabled]="isPast() || voted()" [class.selected]="optionSelected(question.id, answer.id)" (click)="select(question.id, answer.id)">
+                  <span class="radio" [class.checked]="optionSelected(question.id, answer.id)"></span>{{ answer.text }}
+                </button>
+              }
+            </div>
+          </section>
+        }
 
-    <app-results-panel [questions]="poll()!.questions" />
-  </section>
+        @if (error()) { <p class="error submit-error">{{ error() }}</p> }
+        <button class="complete" type="button" [disabled]="isPast() || voted() || saving() || !allQuestionsAnswered()" (click)="submit()">
+          {{ isPast() ? 'Survey ended' : voted() ? 'Survey completed ✓' : saving() ? 'Submitting…' : 'Complete survey' }}
+        </button>
+      </article>
+      <app-results-panel [questions]="poll()!.questions" />
+    </section>
   }
 </div>

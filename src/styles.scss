@@ -1,22 +1,5 @@
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    margin: 0;
-    min-height: 100%;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f9f8f9;
-}
-
-body {
-    color: #33243a;
-}
-
-button,
-input,
-select,
-textarea {
-    font: inherit;
-}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; font-family: Inter, Arial, Helvetica, sans-serif; background: #f8f6f8; }
+body { color: #35263b; }
+button, input, select, textarea { font: inherit; }
+button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid #ffad62; outline-offset: 2px; }

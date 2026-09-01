@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { Poll } from '../../core/models/poll.model';
 import { PollRepository, VoteSelection } from '../../core/services/poll.repository';
@@ -10,15 +11,15 @@ import { ResultsPanelComponent } from '../../shared/components/results-panel/res
 @Component({
   selector: 'app-survey-detail',
   standalone: true,
-  imports: [RouterLink, ResultsPanelComponent],
+  imports: [RouterLink, ResultsPanelComponent, DatePipe],
   templateUrl: './survey-detail.html',
   styleUrl: './survey-detail.scss',
 })
 export class SurveyDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly repo = inject(PollRepository);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly voter = inject(VoterIdService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly poll = signal<Poll | null>(null);
   readonly selected = signal<Record<string, string>>({});
   readonly voted = signal(false);
@@ -29,7 +30,8 @@ export class SurveyDetailComponent {
   private channel: RealtimeChannel | null = null;
 
   constructor() {
-    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => void this.load(params.get('id')));
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => void this.load(params.get('id')));
     this.destroyRef.onDestroy(() => void this.repo.removeChannel(this.channel));
   }
 
@@ -51,8 +53,14 @@ export class SurveyDetailComponent {
     if (!this.canSubmit()) return;
     this.saving.set(true);
     this.error.set('');
-    try { await this.saveVotes(); } catch (error) { this.error.set(this.message(error)); }
+    try { await this.saveVotes(); }
+    catch (error) { this.error.set(this.message(error)); }
     finally { this.saving.set(false); }
+  }
+
+  statusLabel(): string {
+    if (this.isPast()) return 'Survey ended';
+    return this.voted() ? 'Your response is recorded' : 'Open for voting';
   }
 
   private async saveVotes(): Promise<void> {
@@ -67,21 +75,20 @@ export class SurveyDetailComponent {
     return !this.isLocked() && !this.saving() && this.allQuestionsAnswered();
   }
 
-  private isLocked(): boolean {
-    return this.isPast() || this.voted();
-  }
+  private isLocked(): boolean { return this.isPast() || this.voted(); }
 
   private selections(): VoteSelection[] {
     return (this.poll()?.questions ?? []).map((question) => ({
-      questionId: question.id,
-      optionId: this.selected()[question.id],
+      questionId: question.id, optionId: this.selected()[question.id],
     }));
   }
 
   private async load(id: string | null): Promise<void> {
     if (!id) return;
-    this.loading.set(true); this.error.set('');
-    try { await this.loadPoll(id); } catch (error) { this.error.set(this.message(error)); }
+    this.loading.set(true);
+    this.error.set('');
+    try { await this.loadPoll(id); }
+    catch (error) { this.error.set(this.message(error)); }
     finally { this.loading.set(false); }
   }
 
@@ -103,7 +110,7 @@ export class SurveyDetailComponent {
   }
 
   private checkPast(): boolean {
-    const date = this.poll()?.deadline;
+    const date = this.poll()?.endDate;
     return !!date && new Date(date).getTime() < Date.now();
   }
 

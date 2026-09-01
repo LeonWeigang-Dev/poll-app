@@ -1,59 +1,13 @@
-.results {
-    color: #36253a;
-}
-
-.results header {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-bottom: 20px;
-}
-
-.results h2 {
-    margin: 0;
-    font-size: 19px;
-}
-
-.results header span {
-    font-size: 11px;
-    color: #ff9e56;
-    font-weight: 800;
-}
-
-.result-question {
-    margin-bottom: 26px;
-}
-
-.result-question h3 {
-    margin: 0 0 12px;
-    font-size: 12px;
-    line-height: 1.35;
-}
-
-.row {
-    display: grid;
-    grid-template-columns: minmax(110px, 1fr) 115px 34px;
-    gap: 8px;
-    align-items: center;
-    margin: 6px 0;
-    font-size: 10px;
-}
-
-.bar {
-    height: 7px;
-    border-radius: 99px;
-    background: #ece7ee;
-    overflow: hidden;
-}
-
-.bar i {
-    display: block;
-    height: 100%;
-    background: #ffac63;
-    border-radius: inherit;
-}
-
-.row b {
-    font-size: 10px;
-    text-align: right;
-}
+.results { color: #35263b; background: #fff; border-radius: 22px; padding: 26px; box-shadow: 0 10px 30px rgba(54,39,60,.06); }
+.results header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 24px; }
+.eyebrow { color: #ff9f4e; font-size: 8px; font-weight: 900; letter-spacing: .12em; }
+.results h2 { margin: 5px 0 0; font-size: 22px; }
+.live { color: #ff9f4e; font-size: 10px; font-weight: 900; }
+.result-question { padding: 18px 0; border-top: 1px solid #ece6ee; }
+.result-question h3 { margin: 0 0 13px; font-size: 12px; line-height: 1.45; }
+.row { display: grid; grid-template-columns: minmax(120px, 1fr) minmax(100px, 1.2fr) 34px; gap: 9px; align-items: center; margin: 8px 0; font-size: 9px; }
+.answer-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #635769; }
+.bar { height: 8px; border-radius: 999px; background: #eee9f0; overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: inherit; background: #ffad62; transition: width .35s ease; }
+.row b { text-align: right; font-size: 9px; }
+@media (max-width: 500px) { .results { padding: 20px; } .row { grid-template-columns: 1fr 70px 30px; } }

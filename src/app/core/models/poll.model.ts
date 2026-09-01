@@ -3,7 +3,7 @@ export interface Poll {
   title: string;
   category: string;
   description: string;
-  deadline: string | null;
+  endDate: string | null;
   createdAt: string;
   questions: PollQuestion[];
 }
@@ -24,7 +24,7 @@ export interface CreatePollInput {
   title: string;
   category: string;
   description: string;
-  deadline: string | null;
+  endDate: string | null;
   questions: CreateQuestionInput[];
 }
 
@@ -40,3 +40,6 @@ export const POLL_CATEGORIES = [
   'Community',
   'Entertainment',
 ];
+
+export const MIN_ANSWERS = 2;
+export const MAX_ANSWERS = 5;

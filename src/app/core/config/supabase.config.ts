@@ -1,6 +1,6 @@
 export const SUPABASE_CONFIG = {
-  url: 'https://psdscbmovprvlzrqvquh.supabase.co',
-  anonKey: 'sb_publishable_VkiMJvh1-VGnjnwscMxZLA_O7JJVWXz',
+  url: 'https://YOUR-PROJECT.supabase.co',
+  anonKey: 'YOUR-ANON-KEY',
 };
 
 export const isSupabaseConfigured = (): boolean =>
