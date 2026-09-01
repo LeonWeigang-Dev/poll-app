@@ -1,0 +1,6 @@
+<div class="filter">
+  <span>Sort by categories</span>
+  <select [value]="selected()" (change)="changed.emit($any($event.target).value)" aria-label="Filter by category">
+    @for (category of categories(); track category) { <option [value]="category">{{ category }}</option> }
+  </select>
+</div>

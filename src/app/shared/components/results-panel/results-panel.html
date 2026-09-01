@@ -1,0 +1,15 @@
+<section class="results">
+  <header><h2>Survey results</h2><span>LIVE</span></header>
+  @for (question of questions(); track question.id; let questionIndex = $index) {
+    <article class="result-question">
+      <h3>{{ questionIndex + 1 }}. {{ question.text }}</h3>
+      @for (answer of question.answers; track answer.id) {
+        <div class="row">
+          <span>{{ answer.text }}</span>
+          <div class="bar"><i [style.width.%]="percent(question, answer.votes)"></i></div>
+          <b>{{ percent(question, answer.votes) }}%</b>
+        </div>
+      }
+    </article>
+  }
+</section>

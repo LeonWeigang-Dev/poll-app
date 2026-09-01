@@ -1,0 +1,5 @@
+<a class="survey-card" [class.highlight]="highlight()" [class.past]="past()" [routerLink]="['/survey', poll().id]">
+  <span class="category">{{ poll().category }}</span>
+  <h3>{{ poll().title }}</h3>
+  <span class="deadline">{{ daysLabel() }}</span>
+</a>

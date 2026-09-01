@@ -1,0 +1,38 @@
+<div class="page-shell">
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>Collect Feedback,<br>Unlock Ideas</h1>
+      <p>{{ introText }}</p>
+      <button class="primary" type="button" (click)="openCreate()">New survey <span>＋</span></button>
+    </div>
+    <img class="hero-visual" src="/assets/desktop/phone-mockup.svg" alt="Survey on a phone">
+  </section>
+
+  <section class="surveys">
+    <h2>Your surveys</h2>
+    @if (store.endingSoon().length && !store.showPast()) {
+      <div class="ending-head"><span>Ending soon surveys</span></div>
+      <div class="ending-grid">
+        @for (poll of store.endingSoon(); track poll.id) { <app-survey-card [poll]="poll" [highlight]="true" /> }
+      </div>
+    }
+
+    <div class="toolbar">
+      <div class="tabs">
+        <button [class.active]="!store.showPast()" (click)="store.setPast(false)">Active survey</button>
+        <button [class.active]="store.showPast()" (click)="store.setPast(true)">Past survey</button>
+      </div>
+      <app-category-filter [categories]="store.categories()" [selected]="store.selectedCategory()" (changed)="store.setCategory($event)" />
+    </div>
+
+    @if (store.error()) { <p class="error">{{ store.error() }}</p> }
+    @if (store.loading()) { <p class="loading">Loading surveys…</p> }
+    @else if (!store.filteredPolls().length) { <p class="empty">No surveys found for this filter.</p> }
+    @else {
+      <div class="survey-grid">
+        @for (poll of store.filteredPolls(); track poll.id) { <app-survey-card [poll]="poll" [past]="store.showPast()" /> }
+      </div>
+    }
+  </section>
+</div>
+@if (showCreate()) { <app-create-survey (closed)="closeCreate()" (published)="created()" /> }

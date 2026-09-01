@@ -1,0 +1,24 @@
+:host { position: fixed; inset: 0; z-index: 50; }
+.overlay { position: absolute; inset: 0; padding: 30px; background: rgba(41, 27, 47, .5); display: grid; place-items: center; overflow: auto; }
+.modal { width: min(900px, 100%); background: #38283f; color: #fff; border-radius: 22px; padding: 28px; box-sizing: border-box; box-shadow: 0 30px 80px rgba(0,0,0,.25); }
+.modal-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+.modal-head h1 { margin: 6px 0 0; color: #ff9f4e; font-size: 30px; }
+.modal-head .badge { display: inline-block; background: #ffad62; color: #3b2941; padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: 900; }
+.modal-head button { border: 0; border-radius: 5px; background: #735f76; color: white; padding: 6px 10px; cursor: pointer; }
+.top-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+label { display: grid; gap: 5px; font-size: 10px; }
+label.wide { grid-column: 1 / -1; }
+input, select, textarea { width: 100%; box-sizing: border-box; border: 0; border-radius: 6px; padding: 9px 10px; font: inherit; color: #32253a; background: #fff; }
+textarea { min-height: 70px; resize: vertical; }
+.question-list { display: grid; gap: 12px; margin-top: 18px; }
+.question-card { background: #48374d; border-radius: 10px; padding: 16px; }
+.question-head { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 7px; }
+.question-head button, .answers button { border: 0; background: transparent; color: #dccddd; cursor: pointer; }
+.question-input { margin-bottom: 10px; }
+.answers { display: grid; gap: 7px; }
+.answers label { grid-template-columns: 16px 1fr 24px; align-items: center; }
+.ghost { border: 0; background: transparent; color: white; padding: 8px 0; cursor: pointer; font-size: 10px; }
+.modal-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; }
+.publish { border: 0; border-radius: 6px; background: #ffb566; color: #3d2940; font-weight: 900; padding: 10px 16px; cursor: pointer; }
+.publish:disabled { opacity: .6; }
+@media (max-width: 640px) { .overlay { padding: 12px; } .modal { padding: 18px; border-radius: 16px; } .top-fields { grid-template-columns: 1fr; } label.wide { grid-column: auto; } .modal-foot { gap: 12px; align-items: flex-end; } }

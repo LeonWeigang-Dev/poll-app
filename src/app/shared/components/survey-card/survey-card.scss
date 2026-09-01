@@ -1,0 +1,11 @@
+.survey-card {
+  display: flex; flex-direction: column; gap: 12px; min-height: 122px; padding: 18px;
+  border-radius: 18px; background: #45364b; color: #fff; text-decoration: none;
+  transition: transform .2s ease, background .2s ease; box-sizing: border-box;
+}
+.survey-card:hover { transform: translateY(-2px); background: #4e3b54; }
+.survey-card.highlight { background: #faf4ff; color: #302235; min-height: 180px; }
+.survey-card.past { opacity: .82; }
+.category { font-size: 11px; opacity: .72; }
+.survey-card h3 { margin: 0; font-size: 17px; line-height: 1.1; font-weight: 800; }
+.deadline { align-self: flex-start; margin-top: auto; padding: 4px 8px; border-radius: 6px; background: #ffb96e; color: #3d2540; font-size: 10px; font-weight: 800; }
