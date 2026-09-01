@@ -4,5 +4,5 @@ export const SUPABASE_CONFIG = {
 };
 
 export const isSupabaseConfigured = (): boolean =>
-  !SUPABASE_CONFIG.url.includes('https://psdscbmovprvlzrqvquh.supabase.co') &&
-  !SUPABASE_CONFIG.anonKey.includes('sb_publishable_VkiMJvh1-VGnjnwscMxZLA_O7JJVWXz');
+  !SUPABASE_CONFIG.url.includes('YOUR-PROJECT') &&
+  !SUPABASE_CONFIG.anonKey.includes('YOUR-ANON-KEY');

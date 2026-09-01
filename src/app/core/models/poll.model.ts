@@ -3,7 +3,7 @@ export interface Poll {
   title: string;
   category: string;
   description: string;
-  endDate: string | null;
+  deadline: string | null;
   createdAt: string;
   questions: PollQuestion[];
 }
@@ -24,7 +24,7 @@ export interface CreatePollInput {
   title: string;
   category: string;
   description: string;
-  endDate: string | null;
+  deadline: string | null;
   questions: CreateQuestionInput[];
 }
 

@@ -20,7 +20,7 @@ export class PollStoreService {
 
   readonly endingSoon = computed(() => this.polls().filter((poll) =>
     !this.isPast(poll) && this.hoursToEnd(poll) <= 72
-  ).sort((a, b) => this.dateValue(a.endDate) - this.dateValue(b.endDate)).slice(0, 3));
+  ).sort((a, b) => this.dateValue(a.deadline) - this.dateValue(b.deadline)).slice(0, 3));
 
   async load(): Promise<void> {
     this.loading.set(true);
@@ -59,8 +59,8 @@ export class PollStoreService {
 
   private matchesStatus(poll: Poll): boolean { return this.isPast(poll) === this.showPast(); }
   private matchesCategory(poll: Poll): boolean { return this.selectedCategory() === 'All' || poll.category === this.selectedCategory(); }
-  private isPast(poll: Poll): boolean { return !!poll.endDate && new Date(poll.endDate).getTime() < Date.now(); }
-  private hoursToEnd(poll: Poll): number { return poll.endDate ? (new Date(poll.endDate).getTime() - Date.now()) / 3_600_000 : Number.POSITIVE_INFINITY; }
+  private isPast(poll: Poll): boolean { return !!poll.deadline && new Date(poll.deadline).getTime() < Date.now(); }
+  private hoursToEnd(poll: Poll): number { return poll.deadline ? (new Date(poll.deadline).getTime() - Date.now()) / 3_600_000 : Number.POSITIVE_INFINITY; }
   private dateValue(date: string | null): number { return date ? new Date(date).getTime() : Number.MAX_SAFE_INTEGER; }
   private message(error: unknown): string { return error instanceof Error ? error.message : 'Something went wrong.'; }
 }

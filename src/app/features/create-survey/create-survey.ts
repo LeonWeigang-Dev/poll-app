@@ -13,7 +13,7 @@ export class CreateSurveyComponent {
   readonly closed = output<void>();
   readonly published = output<void>();
   readonly categories = POLL_CATEGORIES;
-  readonly form = this.fb.group({ title: ['', [Validators.required, Validators.maxLength(80)]], category: ['Team activities', Validators.required], endDate: [''], description: [''], questions: this.fb.array([this.questionGroup()]) });
+  readonly form = this.fb.group({ title: ['', [Validators.required, Validators.maxLength(80)]], category: ['Team activities', Validators.required], deadline: [''], description: [''], questions: this.fb.array([this.questionGroup()]) });
   readonly answersPerQuestion = 3;
   saving = false;
 
@@ -31,7 +31,7 @@ export class CreateSurveyComponent {
     this.saving = true;
     const value = this.form.getRawValue();
     const result = await this.store.create({
-      title: value.title!, category: value.category!, description: value.description ?? '', endDate: value.endDate || null,
+      title: value.title!, category: value.category!, description: value.description ?? '', deadline: value.deadline || null,
       questions: value.questions.map((question) => ({ text: question.text!, answers: question.answers.filter((answer): answer is string => !!answer && answer.trim().length > 0) }))
     });
     this.saving = false;

@@ -82,7 +82,7 @@ export class PollRepository {
   private async insertSurvey(input: CreatePollInput): Promise<{ id: string }> {
     const { data, error } = await this.supabase.client!
       .from('surveys')
-      .insert({ title: input.title, category: input.category, description: input.description, end_date: input.endDate })
+      .insert({ title: input.title, category: input.category, description: input.description, end_date: input.deadline })
       .select('id')
       .single();
     if (error) throw error;
@@ -126,7 +126,7 @@ export class PollRepository {
       title: row.title,
       category: row.category,
       description: row.description ?? '',
-      endDate: row.end_date ?? null,
+      deadline: row.end_date ?? null,
       createdAt: row.created_at,
       questions: this.mapQuestions(row.questions ?? []),
     };
@@ -159,7 +159,7 @@ export class PollRepository {
   private demoPoll(id: string, title: string, category: string, days: number): Poll {
     return {
       id, title, category, description: 'We want to create an easy way for everyone to share their preferences and ideas.',
-      endDate: this.demoEnd(days), createdAt: new Date().toISOString(), questions: this.demoQuestions(id),
+      deadline: this.demoEnd(days), createdAt: new Date().toISOString(), questions: this.demoQuestions(id),
     };
   }
 
@@ -183,7 +183,7 @@ export class PollRepository {
   private createDemoPoll(input: CreatePollInput): Poll {
     return {
       id: crypto.randomUUID(), title: input.title, category: input.category, description: input.description,
-      endDate: input.endDate, createdAt: new Date().toISOString(), questions: this.createDemoQuestions(input),
+      deadline: input.deadline, createdAt: new Date().toISOString(), questions: this.createDemoQuestions(input),
     };
   }
 

@@ -103,7 +103,7 @@ export class SurveyDetailComponent {
   }
 
   private checkPast(): boolean {
-    const date = this.poll()?.endDate;
+    const date = this.poll()?.deadline;
     return !!date && new Date(date).getTime() < Date.now();
   }
 
