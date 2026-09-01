@@ -40,9 +40,9 @@ export class SurveyDetailComponent {
     const optionId = this.selected()[questionId];
     const poll = this.poll();
     if (!optionId || !poll) return;
-    const ok = await this.repo.vote(poll.id, questionId, optionId, this.voter.getId());
-    if (ok) this.submitted.update((state) => ({ ...state, [questionId]: true }));
-    if (ok) await this.refresh();
+    await this.repo.vote(poll.id, questionId, optionId, this.voter.getId());
+    this.submitted.update((state) => ({ ...state, [questionId]: true }));
+    await this.refresh();
   }
 
   private async load(id: string | null): Promise<void> {
