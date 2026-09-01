@@ -2,13 +2,26 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class VoterIdService {
-  private readonly storageKey = 'poll-app-voter-id';
+  private readonly voterKey = 'poll-app-voter-id';
+  private readonly voteKeyPrefix = 'poll-app-voted-';
 
   getId(): string {
-    const existing = localStorage.getItem(this.storageKey);
-    if (existing) return existing;
-    const id = crypto.randomUUID();
-    localStorage.setItem(this.storageKey, id);
-    return id;
+    const storedId = localStorage.getItem(this.voterKey);
+    if (storedId) return storedId;
+    const newId = crypto.randomUUID();
+    localStorage.setItem(this.voterKey, newId);
+    return newId;
+  }
+
+  hasVoted(surveyId: string): boolean {
+    return localStorage.getItem(this.voteKey(surveyId)) === 'true';
+  }
+
+  markVoted(surveyId: string): void {
+    localStorage.setItem(this.voteKey(surveyId), 'true');
+  }
+
+  private voteKey(surveyId: string): string {
+    return `${this.voteKeyPrefix}${surveyId}`;
   }
 }

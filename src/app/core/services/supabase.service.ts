@@ -9,6 +9,6 @@ export class SupabaseService {
 
   private createClient(): SupabaseClient | null {
     if (!isSupabaseConfigured()) return null;
-    return createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.publishableKey, { auth: { persistSession: false } });
+    return createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
   }
 }
