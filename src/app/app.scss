@@ -1,4 +1,17 @@
-:host { display: block; min-height: 100vh; }
-.shell { min-height: 100vh; background: #f8f6f8; }
-.dark-shell { background: #33233a; }
-main { min-height: calc(100vh - 82px); }
+:host {
+    display: block;
+    min-height: 100vh;
+}
+
+.shell {
+    min-height: 100vh;
+    background: #f8f6f8;
+}
+
+.dark-shell {
+    background: #33233a;
+}
+
+main {
+    min-height: calc(100vh - 82px);
+}
