@@ -24,9 +24,8 @@ export class PollStoreService {
     finally { this.loading.set(false); }
   }
 
-  async getPoll(id: string): Promise<Poll | null> {
-    try { return await this.repo.getPoll(id); }
-    catch (error) { this.error.set(this.message(error)); return null; }
+  async getPoll(): Promise<Poll[]> {
+    return await this.repo.getPolls();
   }
 
   async create(input: CreatePollInput): Promise<Poll | null> {

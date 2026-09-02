@@ -97,7 +97,10 @@ export class CreateSurveyComponent {
     return questions.map((question) => ({
       text: question.text.trim(),
       allowMultiple: question.allowMultiple,
-      answers: question.answers.map((answer) => answer.trim()),
+      answers: question.answers.map((answer, index) => ({
+        label: answer.trim(),
+        sort_number: index
+      })),
     }));
   }
 

@@ -1,5 +1,6 @@
 <div class="overlay" (click)="closed.emit()">
-  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="create-title" (click)="$event.stopPropagation()">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="create-title"
+    (click)="$event.stopPropagation()">
     <div class="modal-head">
       <div>
         <span class="badge">Draft</span>
@@ -13,8 +14,10 @@
       <div class="top-fields">
         <label>
           <span>Survey name <b>*</b></span>
-          <input formControlName="title" placeholder="Survey name" [class.invalid]="form.controls.title.touched && form.controls.title.invalid">
-          @if (form.controls.title.touched && form.controls.title.hasError('required')) { <small>Survey name is required.</small> }
+          <input formControlName="title" placeholder="Survey name"
+            [class.invalid]="form.controls.title.touched && form.controls.title.invalid">
+          @if (form.controls.title.touched && form.controls.title.hasError('required')) { <small>Survey name is
+            required.</small> }
         </label>
 
         <label>
@@ -26,8 +29,10 @@
 
         <label>
           <span>Set end date <em>(optional)</em></span>
-          <input type="date" formControlName="endDate" [class.invalid]="form.controls.endDate.touched && form.controls.endDate.invalid">
-          @if (form.controls.endDate.touched && form.controls.endDate.hasError('pastDate')) { <small>Choose a future date.</small> }
+          <input type="date" formControlName="endDate"
+            [class.invalid]="form.controls.endDate.touched && form.controls.endDate.invalid">
+          @if (form.controls.endDate.touched && form.controls.endDate.hasError('pastDate')) { <small>Choose a future
+            date.</small> }
         </label>
 
         <label class="wide">
@@ -38,36 +43,40 @@
 
       <div class="question-list" formArrayName="questions">
         @for (question of questions.controls; track trackQuestion($index); let questionIndex = $index) {
-          <section class="question-card" [formGroupName]="questionIndex">
-            <div class="question-head">
-              <span>{{ questionIndex + 1 }}. Question <b>*</b></span>
-              @if (questions.length > 1) {
-                <button type="button" (click)="removeQuestion(questionIndex)" aria-label="Delete question">×</button>
-              }
-            </div>
+        <section class="question-card" [formGroupName]="questionIndex">
+          <div class="question-head">
+            <span>{{ questionIndex + 1 }}. Question <b>*</b></span>
+            @if (questions.length > 1) {
+            <button type="button" (click)="removeQuestion(questionIndex)" aria-label="Delete question">×</button>
+            }
+          </div>
 
-            <input class="question-input" formControlName="text" placeholder="Choose the activity you prefer" [class.invalid]="question.controls.text.touched && question.controls.text.invalid">
-            <label class="multi-choice">
-              <input type="checkbox" formControlName="allowMultiple">
-              <span>Allow multiple options</span>
+          <input class="question-input" formControlName="text" placeholder="Choose the activity you prefer"
+            [class.invalid]="question.controls.text.touched && question.controls.text.invalid">
+          <label class="multi-choice">
+            <input type="checkbox" formControlName="allowMultiple">
+            <span>Allow multiple options</span>
+          </label>
+
+          <div class="answers" formArrayName="answers">
+            @for (answer of answerControls(questionIndex).controls; track $index; let answerIndex = $index) {
+            <label>
+              <span>{{ ['A.', 'B.', 'C.', 'D.', 'E.', 'F.'][answerIndex] }}</span>
+              <input [formControlName]="answerIndex" placeholder="Answer"
+                [class.invalid]="answer.touched && answer.invalid">
+              @if (answerControls(questionIndex).length > 2) {
+              <button type="button" (click)="removeAnswer(questionIndex, answerIndex)"
+                aria-label="Delete answer">×</button>
+              }
             </label>
+            }
+          </div>
 
-            <div class="answers" formArrayName="answers">
-              @for (answer of answerControls(questionIndex).controls; track $index; let answerIndex = $index) {
-                <label>
-                  <span>{{ ['A.', 'B.', 'C.', 'D.', 'E.', 'F.'][answerIndex] }}</span>
-                  <input [formControlName]="answerIndex" placeholder="Answer" [class.invalid]="answer.touched && answer.invalid">
-                  @if (answerControls(questionIndex).length > 2) {
-                    <button type="button" (click)="removeAnswer(questionIndex, answerIndex)" aria-label="Delete answer">×</button>
-                  }
-                </label>
-              }
-            </div>
-
-            <button class="ghost" type="button" (click)="addAnswer(questionIndex)" [disabled]="answerControls(questionIndex).length >= 6">
-              Add answer ⊕
-            </button>
-          </section>
+          <button class="ghost" type="button" (click)="addAnswer(questionIndex)"
+            [disabled]="answerControls(questionIndex).length >= 6">
+            Add answer ⊕
+          </button>
+        </section>
         }
       </div>
 

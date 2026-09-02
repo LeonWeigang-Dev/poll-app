@@ -32,7 +32,7 @@ export interface CreatePollInput {
 export interface CreateQuestionInput {
   text: string;
   allowMultiple: boolean;
-  answers: string[];
+  answers: { label: string, sort_number: number }[];
 }
 
 export const POLL_CATEGORIES = [

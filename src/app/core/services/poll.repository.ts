@@ -36,11 +36,13 @@ interface SurveyRow {
 export class PollRepository {
   private readonly supabase = inject(SupabaseService);
 
+  // In poll.repository.ts
   async getPolls(): Promise<Poll[]> {
     if (!this.supabase.client) return this.demoPolls();
     const { data, error } = await this.queryPolls();
+
     if (error) throw error;
-    return (data as SurveyRow[] | null ?? []).map((row) => this.mapPoll(row));
+    return (data as SurveyRow[]).map((poll) => this.mapPoll(poll));
   }
 
   async getPoll(id: string): Promise<Poll | null> {
@@ -141,8 +143,15 @@ export class PollRepository {
     return data.id;
   }
 
-  private async insertOptions(questionId: string, answers: string[]): Promise<void> {
-    const rows = answers.map((text, position) => ({ question_id: questionId, text, position }));
+  private async insertOptions(
+    questionId: string,
+    answers: CreatePollInput['questions'][number]['answers'],
+  ): Promise<void> {
+    const rows = answers.map((answer) => ({
+      question_id: questionId,
+      text: answer.label,
+      position: answer.sort_number,
+    }));
     const { error } = await this.supabase.client!.from('options').insert(rows);
     if (error) throw error;
   }
@@ -251,7 +260,11 @@ export class PollRepository {
       id: crypto.randomUUID(),
       text: question.text,
       allowMultiple: question.allowMultiple,
-      answers: question.answers.map((text) => ({ id: crypto.randomUUID(), text, votes: 0 })),
+      answers: question.answers.map((answer) => ({
+        id: crypto.randomUUID(),
+        text: answer.label,
+        votes: 0,
+      })),
     }));
   }
 }
