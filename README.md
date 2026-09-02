@@ -1,90 +1,71 @@
 # Poll App – Angular + Supabase
 
-This project uses Angular, TypeScript, SCSS and Supabase. There is no login. A browser gets one anonymous voter id in localStorage and stores a survey-specific vote flag after a successful submission.
+This project uses Angular, TypeScript, SCSS and Supabase. There is no login.
 
-## Start
+## Supabase setup
 
-1. Run `npm install`.
-2. Add your Supabase URL and anon key in `src/app/core/config/supabase.config.ts`.
-3. Create the four tables in the Supabase Dashboard as described below.
-4. Enable Realtime for `votes`.
-5. Make sure the tables are readable/writable for the `anon` role according to your RLS settings.
-6. Run `npm start`.
+Create these four public tables in Supabase:
 
-When Supabase is not configured, the application uses local demo data. This lets you test the UI before connecting the backend.
+### surveys
+- `id` – uuid, primary key, default `gen_random_uuid()`
+- `title` – text, not null
+- `category` – text, not null
+- `description` – text, nullable
+- `end_date` – timestamptz, nullable
+- `created_at` – timestamptz, not null, default `now()`
 
-## Supabase tables
+### questions
+- `id` – uuid, primary key, default `gen_random_uuid()`
+- `survey_id` – uuid, not null, foreign key → `surveys.id`, on delete cascade
+- `text` – text, not null
+- `position` – integer, not null, default `0`
+- `allow_multiple` – boolean, not null, default `false`
 
-### `surveys`
+### options
+- `id` – uuid, primary key, default `gen_random_uuid()`
+- `question_id` – uuid, not null, foreign key → `questions.id`, on delete cascade
+- `text` – text, not null
+- `position` – integer, not null, default `0`
 
-| Column | Type | Important setting |
-| --- | --- | --- |
-| `id` | uuid | Primary key, default `gen_random_uuid()` |
-| `title` | text | Required |
-| `category` | text | Required |
-| `description` | text | Optional |
-| `end_date` | timestamptz | Optional |
-| `created_at` | timestamptz | Required, default `now()` |
+### votes
+- `id` – uuid, primary key, default `gen_random_uuid()`
+- `survey_id` – uuid, not null, foreign key → `surveys.id`, on delete cascade
+- `question_id` – uuid, not null, foreign key → `questions.id`, on delete cascade
+- `option_id` – uuid, not null, foreign key → `options.id`, on delete cascade
+- `voter_id` – text, not null
+- `created_at` – timestamptz, not null, default `now()`
 
-### `questions`
+Create a unique constraint on `votes(survey_id, question_id, option_id, voter_id)`.
 
-| Column | Type | Important setting |
-| --- | --- | --- |
-| `id` | uuid | Primary key, default `gen_random_uuid()` |
-| `survey_id` | uuid | Foreign key → `surveys.id`, required |
-| `text` | text | Required |
-| `position` | integer | Required |
+## RLS / Realtime
 
-### `options`
+The Angular app uses the public anon key and does not authenticate users. Enable RLS on the four tables and add policies that allow the public client to:
 
-| Column | Type | Important setting |
-| --- | --- | --- |
-| `id` | uuid | Primary key, default `gen_random_uuid()` |
-| `question_id` | uuid | Foreign key → `questions.id`, required |
-| `text` | text | Required |
-| `position` | integer | Required |
+- select surveys, questions, options and votes
+- insert surveys, questions and options
+- insert votes
 
-### `votes`
+Enable Realtime for the `votes` table so the result panel can refresh when new votes arrive.
 
-| Column | Type | Important setting |
-| --- | --- | --- |
-| `id` | uuid | Primary key, default `gen_random_uuid()` |
-| `survey_id` | uuid | Foreign key → `surveys.id`, required |
-| `question_id` | uuid | Foreign key → `questions.id`, required |
-| `option_id` | uuid | Foreign key → `options.id`, required |
-| `voter_id` | uuid | Required |
-| `created_at` | timestamptz | Required, default `now()` |
+For a production application, stronger anti-abuse protection would require authenticated users or server-side vote validation. For this no-login project, the browser keeps one voter id in localStorage and stores a completed-survey flag locally.
 
-The Angular app sends one vote row per question when the user completes a survey.
+## Angular configuration
 
-## One vote per survey
+Open `src/app/core/config/supabase.config.ts` and replace the two placeholders with the Supabase project URL and anon key.
 
-The frontend prevents a second submission by storing `poll-app-voted-{surveyId}` in localStorage. The repository also checks Supabase for an existing `votes` row for the same `survey_id` and `voter_id` before inserting.
+Do not put a Supabase service-role key into the Angular application.
 
-For an extra database-level guard, add a unique constraint/index for the combination `survey_id + voter_id`. The exact Supabase Dashboard steps are: Table Editor → `votes` → Indexes → create a unique index on those two columns.
+## Demo mode
 
-This is still an anonymous application: clearing localStorage or using another browser/device creates a new anonymous voter id.
+Until Supabase is configured, the app falls back to local demo data. This makes it possible to develop the UI before the database is connected.
 
-## Realtime
+## Main features
 
-Supabase Dashboard → Database → Replication / Realtime → add `votes` to the realtime publication. The detail page subscribes to changes for the current survey and reloads its result counts.
-
-## Features implemented
-
-- Figma-inspired dark home screen and light survey detail view
-- Responsive layout for desktop and mobile
-- Ending-soon surveys sorted by nearest deadline
-- Active/Past tabs kept separate
-- Category filtering with an `All` option for each tab
-- New Survey overlay instead of a separate route
-- Required-field validation
-- Optional description and deadline
-- Multiple questions
-- Minimum 2 and maximum 5 answers per question
-- Survey submission only after every question has an answer
-- Past surveys remain viewable but cannot be answered
-- Anonymous one-submission-per-survey flow
-- Live result refresh through Supabase Realtime
-- TypeScript files kept below 400 lines and functions kept below 14 lines
-
-No SQL files are part of this project. The database is intended to be created directly in Supabase.
+- Ending soon surveys sorted by earliest deadline
+- Active / Past survey tabs with independent category filtering
+- Create Survey overlay with required field validation
+- Unlimited questions, with up to six answers per question
+- Single choice and multiple choice questions
+- Survey details with live result panel
+- One completed submission per survey and browser
+- Supabase Realtime refresh for votes

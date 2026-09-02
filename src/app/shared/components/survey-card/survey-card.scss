@@ -1,9 +1,22 @@
-.survey-card { display: flex; flex-direction: column; gap: 10px; min-height: 138px; padding: 18px; border-radius: 16px; background: #45364b; color: #fff; text-decoration: none; border: 1px solid transparent; transition: transform .18s ease, border-color .18s ease, background .18s ease; }
-.survey-card:hover { transform: translateY(-2px); border-color: rgba(255,181,102,.65); background: #4b3a51; }
-.survey-card.highlight { min-height: 166px; background: #f7eefb; color: #36263c; }
-.survey-card.past { opacity: .78; }
-.category { font-size: 10px; opacity: .65; text-transform: uppercase; letter-spacing: .05em; }
-.survey-card h3 { margin: 0; max-width: 300px; font-size: 18px; line-height: 1.08; font-weight: 800; }
-.card-foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; margin-top: auto; font-size: 10px; font-weight: 700; }
-.relative { padding: 5px 8px; border-radius: 6px; background: #ffb566; color: #3d2841; white-space: nowrap; }
-@media (max-width: 620px) { .survey-card { min-height: 124px; } .survey-card h3 { font-size: 16px; } }
+.survey-card {
+  display: flex;
+  min-height: 112px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 13px 15px 12px;
+  border-radius: 12px;
+  background: #47364d;
+  color: #fff;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: transform .18s ease, background .18s ease;
+}
+.survey-card:hover { transform: translateY(-2px); background: #4f3d55; }
+.survey-card.highlight { min-height: 116px; background: #faf5fc; color: #33243a; }
+.survey-card.past { opacity: .9; }
+.card-top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.category, .past-label { font-size: 9px; opacity: .72; }
+.past-label { color: #d9a1bd; }
+.survey-card h3 { margin: 0; max-width: 270px; font-size: 15px; line-height: 1.13; font-weight: 800; }
+.deadline { align-self: flex-start; margin-top: auto; padding: 4px 7px; border-radius: 5px; background: #ffb768; color: #3d2940; font-size: 8px; }
+@media (max-width: 620px) { .survey-card h3 { max-width: none; } }

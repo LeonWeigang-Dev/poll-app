@@ -1,4 +1,17 @@
-<div class="shell" [class.dark-shell]="darkShell()">
-  <app-header [dark]="darkShell()" />
+<div class="shell">
+  <app-header />
   <main><router-outlet /></main>
 </div>
+
+@if (ui.createSurveyOpen()) {
+  <app-create-survey
+    (closed)="ui.closeCreateSurvey()"
+    (published)="onPublished()" />
+}
+
+@if (toast.toast().visible) {
+  <div class="toast" role="status">
+    <span>{{ toast.toast().message }}</span>
+    <button type="button" (click)="toast.hide()" aria-label="Close notification">×</button>
+  </div>
+}

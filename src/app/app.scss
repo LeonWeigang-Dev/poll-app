@@ -1,17 +1,21 @@
-:host {
-    display: block;
-    min-height: 100vh;
+:host { display: block; min-height: 100vh; background: #fff; }
+.shell { min-height: 100vh; background: #fff; }
+main { min-height: calc(100vh - 76px); }
+.toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: min(380px, calc(100vw - 32px));
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #fff2df;
+  color: #3b2941;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .25);
+  font-size: 13px;
+  font-weight: 700;
 }
-
-.shell {
-    min-height: 100vh;
-    background: #f8f6f8;
-}
-
-.dark-shell {
-    background: #33233a;
-}
-
-main {
-    min-height: calc(100vh - 82px);
-}
+.toast button { border: 0; background: transparent; color: inherit; cursor: pointer; font-size: 20px; line-height: 1; }

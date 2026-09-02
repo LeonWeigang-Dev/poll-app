@@ -4,11 +4,11 @@ import { SUPABASE_CONFIG, isSupabaseConfigured } from '../config/supabase.config
 
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
-  readonly client: SupabaseClient | null = this.createClient();
   readonly configured = isSupabaseConfigured();
+  readonly client: SupabaseClient | null = this.createClient();
 
   private createClient(): SupabaseClient | null {
-    if (!isSupabaseConfigured()) return null;
+    if (!this.configured) return null;
     return createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
   }
 }

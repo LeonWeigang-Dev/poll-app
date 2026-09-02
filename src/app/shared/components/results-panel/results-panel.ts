@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { PollQuestion } from '../../../core/models/poll.model';
 
 @Component({
@@ -9,6 +9,7 @@ import { PollQuestion } from '../../../core/models/poll.model';
 })
 export class ResultsPanelComponent {
   readonly questions = input.required<PollQuestion[]>();
+  readonly hasResults = computed(() => this.questions().some((question) => this.total(question) > 0));
 
   total(question: PollQuestion): number {
     return question.answers.reduce((sum, answer) => sum + answer.votes, 0);

@@ -1,5 +1,5 @@
-import { Component, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, computed, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -8,4 +8,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
-export class HeaderComponent { readonly dark = input(false); }
+export class HeaderComponent {
+  private readonly router = inject(Router);
+  readonly isHome = computed(() => this.router.url === '/' || this.router.url === '');
+}

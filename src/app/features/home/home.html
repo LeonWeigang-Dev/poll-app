@@ -1,48 +1,51 @@
 <div class="page-shell">
   <section class="hero">
     <div class="hero-copy">
-      <h1 class="hero-text">Collect Feedback, Unlock Ideas</h1>
-      <p>Create and share surveys in minutes. Collect opinions, engage your audience, and turn feedback into action.</p>
-      <button class="primary" type="button" (click)="openCreate()">New survey <span>+</span></button>
+      <h1>Collect Feedback,<br>Unlock Ideas</h1>
+      <p>{{ introText }}</p>
+      <button class="primary" type="button" (click)="openCreate()">
+        New survey <span>＋</span>
+      </button>
     </div>
-    <img class="hero-visual" src="/assets/desktop/phone-mockup.svg" alt="Poll App survey preview" />
+    <img class="hero-visual" src="/assets/desktop/phone-mockup.svg" alt="Survey on a phone">
   </section>
 
   <section class="surveys">
-    <div class="section-heading"><span class="eyebrow">SURVEYS</span>
-      <h2>Your surveys</h2>
-    </div>
+    <h2>Your surveys</h2>
 
-    @if (store.endingSoon().length) {
-    <section class="ending-section">
-      <div class="section-label">
-        <h3>Ending soon</h3><span>Closest deadline first</span>
+    @if (store.endingSoon().length && !store.showPast()) {
+      <div class="section-heading">
+        <span>Ending soon surveys</span>
       </div>
       <div class="ending-grid">
-        @for (poll of store.endingSoon(); track poll.id) { <app-survey-card [poll]="poll" [highlight]="true" /> }
+        @for (poll of store.endingSoon(); track poll.id) {
+          <app-survey-card [poll]="poll" [highlight]="true" />
+        }
       </div>
-    </section>
     }
 
     <div class="toolbar">
       <div class="tabs" role="tablist" aria-label="Survey status">
-        <button type="button" [class.active]="!store.showPast()" (click)="store.setPast(false)">Active surveys</button>
-        <button type="button" [class.active]="store.showPast()" (click)="store.setPast(true)">Past surveys</button>
+        <button type="button" [class.active]="!store.showPast()" (click)="store.setPast(false)">Active survey</button>
+        <button type="button" [class.active]="store.showPast()" (click)="store.setPast(true)">Past survey</button>
       </div>
-      <app-category-filter [categories]="store.categories()" [selected]="store.selectedCategory()"
+      <app-category-filter
+        [categories]="store.categories()"
+        [selected]="store.selectedCategory()"
         (changed)="store.setCategory($event)" />
     </div>
 
     @if (store.error()) { <p class="error">{{ store.error() }}</p> }
-    @if (store.loading()) { <p class="loading">Loading surveys…</p> }
-    @else if (!store.filteredPolls().length) { <p class="empty">No surveys found for this category.</p> }
-    @else {
-    <div class="survey-grid">
-      @for (poll of store.filteredPolls(); track poll.id) { <app-survey-card [poll]="poll" [past]="store.showPast()" />
-      }
-    </div>
+    @if (store.loading()) {
+      <div class="state" aria-live="polite">Loading surveys…</div>
+    } @else if (!store.filteredPolls().length) {
+      <div class="state">No surveys found for this filter.</div>
+    } @else {
+      <div class="survey-grid">
+        @for (poll of store.filteredPolls(); track poll.id) {
+          <app-survey-card [poll]="poll" [past]="store.showPast()" />
+        }
+      </div>
     }
   </section>
 </div>
-
-@if (showCreate()) { <app-create-survey (closed)="closeCreate()" (published)="created()" /> }

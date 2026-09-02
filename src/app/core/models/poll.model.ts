@@ -11,6 +11,7 @@ export interface Poll {
 export interface PollQuestion {
   id: string;
   text: string;
+  allowMultiple: boolean;
   answers: PollAnswer[];
 }
 
@@ -30,6 +31,7 @@ export interface CreatePollInput {
 
 export interface CreateQuestionInput {
   text: string;
+  allowMultiple: boolean;
   answers: string[];
 }
 
@@ -40,6 +42,3 @@ export const POLL_CATEGORIES = [
   'Community',
   'Entertainment',
 ];
-
-export const MIN_ANSWERS = 2;
-export const MAX_ANSWERS = 5;

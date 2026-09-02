@@ -1,62 +1,80 @@
-<div class="overlay" (click)="closed.emit()" role="presentation">
-  <section class="modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="create-title">
-    <header class="modal-head">
-      <div><span class="badge">NEW SURVEY</span><h1 id="create-title">Create new survey</h1></div>
-      <button type="button" class="close" (click)="closed.emit()" aria-label="Close">×</button>
-    </header>
+<div class="overlay" (click)="closed.emit()">
+  <section class="modal" role="dialog" aria-modal="true" aria-labelledby="create-title" (click)="$event.stopPropagation()">
+    <div class="modal-head">
+      <div>
+        <span class="badge">Draft</span>
+        <h1 id="create-title">Create new survey</h1>
+      </div>
+      <button class="cancel" type="button" (click)="closed.emit()">Cancel ×</button>
+    </div>
 
-    <form [formGroup]="form" (ngSubmit)="publish()">
-      <section class="top-fields">
-        <label>Survey name <span>*</span>
-          <input formControlName="title" placeholder="Give your survey a clear title" />
-          @if (form.controls.title.touched && form.controls.title.invalid) { <small>Title is required (max. 80 characters).</small> }
+    <form [formGroup]="form" (ngSubmit)="publish()" novalidate>
+      @if (store.error()) { <p class="form-error">{{ store.error() }}</p> }
+      <div class="top-fields">
+        <label>
+          <span>Survey name <b>*</b></span>
+          <input formControlName="title" placeholder="Survey name" [class.invalid]="form.controls.title.touched && form.controls.title.invalid">
+          @if (form.controls.title.touched && form.controls.title.hasError('required')) { <small>Survey name is required.</small> }
         </label>
-        <label>Category <span>*</span>
+
+        <label>
+          <span>Choose category <b>*</b></span>
           <select formControlName="category">
             @for (category of categories; track category) { <option [value]="category">{{ category }}</option> }
           </select>
         </label>
-        <label>Deadline <em>optional</em>
-          <input type="date" formControlName="endDate" [min]="'2026-09-01'" />
-          @if (form.controls.endDate.touched && !endDateIsValid()) { <small>Please choose a future date.</small> }
-        </label>
-        <label class="wide">Description <em>optional</em>
-          <textarea formControlName="description" placeholder="Add a little context for your voters"></textarea>
-        </label>
-      </section>
 
-      <section formArrayName="questions" class="question-list">
-        <div class="section-title"><h2>Questions</h2><span>2–5 answers per question</span></div>
-        @for (question of questions.controls; track $index; let questionIndex = $index) {
-          <article class="question-card" [formGroupName]="questionIndex">
+        <label>
+          <span>Set end date <em>(optional)</em></span>
+          <input type="date" formControlName="endDate" [class.invalid]="form.controls.endDate.touched && form.controls.endDate.invalid">
+          @if (form.controls.endDate.touched && form.controls.endDate.hasError('pastDate')) { <small>Choose a future date.</small> }
+        </label>
+
+        <label class="wide">
+          <span>Describing text <em>(optional)</em></span>
+          <textarea formControlName="description" placeholder="Tell voters a little more about the survey."></textarea>
+        </label>
+      </div>
+
+      <div class="question-list" formArrayName="questions">
+        @for (question of questions.controls; track trackQuestion($index); let questionIndex = $index) {
+          <section class="question-card" [formGroupName]="questionIndex">
             <div class="question-head">
               <span>{{ questionIndex + 1 }}. Question <b>*</b></span>
-              <button type="button" (click)="removeQuestion(questionIndex)" [disabled]="questions.length === 1">Delete</button>
+              @if (questions.length > 1) {
+                <button type="button" (click)="removeQuestion(questionIndex)" aria-label="Delete question">×</button>
+              }
             </div>
-            <input class="question-input" formControlName="text" placeholder="Ask a clear question" />
-            @if (hasQuestionError(questionIndex)) { <small>Question is required.</small> }
+
+            <input class="question-input" formControlName="text" placeholder="Choose the activity you prefer" [class.invalid]="question.controls.text.touched && question.controls.text.invalid">
+            <label class="multi-choice">
+              <input type="checkbox" formControlName="allowMultiple">
+              <span>Allow multiple options</span>
+            </label>
 
             <div class="answers" formArrayName="answers">
               @for (answer of answerControls(questionIndex).controls; track $index; let answerIndex = $index) {
-                <label class="answer-row">
-                  <span>{{ ['A', 'B', 'C', 'D', 'E'][answerIndex] }}</span>
-                  <input [formControlName]="answerIndex" placeholder="Answer option" />
-                  <button type="button" (click)="removeAnswer(questionIndex, answerIndex)" [disabled]="answerControls(questionIndex).length <= 2" aria-label="Remove answer">×</button>
+                <label>
+                  <span>{{ ['A.', 'B.', 'C.', 'D.', 'E.', 'F.'][answerIndex] }}</span>
+                  <input [formControlName]="answerIndex" placeholder="Answer" [class.invalid]="answer.touched && answer.invalid">
+                  @if (answerControls(questionIndex).length > 2) {
+                    <button type="button" (click)="removeAnswer(questionIndex, answerIndex)" aria-label="Delete answer">×</button>
+                  }
                 </label>
-                @if (hasAnswerError(questionIndex, answerIndex)) { <small class="answer-error">Answer is required.</small> }
               }
             </div>
-            <button class="add-answer" type="button" (click)="addAnswer(questionIndex)" [disabled]="answerControls(questionIndex).length >= maxAnswers">
-              {{ answerControls(questionIndex).length >= maxAnswers ? 'Maximum reached' : 'Add answer +' }}
-            </button>
-          </article>
-        }
-      </section>
 
-      <footer class="modal-foot">
-        <button class="secondary" type="button" (click)="addQuestion()">Add question +</button>
-        <button class="publish" [disabled]="saving" type="submit">{{ saving ? 'Publishing…' : 'Publish survey' }}</button>
-      </footer>
+            <button class="ghost" type="button" (click)="addAnswer(questionIndex)" [disabled]="answerControls(questionIndex).length >= 6">
+              Add answer ⊕
+            </button>
+          </section>
+        }
+      </div>
+
+      <div class="modal-foot">
+        <button class="ghost add-question" type="button" (click)="addQuestion()">Add next question ⊕</button>
+        <button class="publish" [disabled]="saving" type="submit">{{ saving ? 'Publishing…' : 'Publish ✓' }}</button>
+      </div>
     </form>
   </section>
 </div>

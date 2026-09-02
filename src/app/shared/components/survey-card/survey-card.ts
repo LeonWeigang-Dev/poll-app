@@ -14,15 +14,10 @@ export class SurveyCardComponent {
   readonly highlight = input(false);
   readonly past = input(false);
 
-  deadlineLabel(): string {
-    const date = this.poll().endDate;
-    return date ? new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(date)) : 'No deadline';
-  }
-
-  relativeLabel(): string {
-    const date = this.poll().endDate;
-    if (!date) return 'Open-ended';
-    const days = Math.ceil((new Date(date).getTime() - Date.now()) / 86_400_000);
-    return days <= 0 ? 'Ended' : days === 1 ? 'Ends tomorrow' : `Ends in ${days} days`;
+  daysLabel(): string {
+    const endDate = this.poll().endDate;
+    if (!endDate) return 'No deadline';
+    const days = Math.ceil((new Date(endDate).getTime() - Date.now()) / 86_400_000);
+    return days <= 0 ? 'Ended' : `Ends in ${days} day${days === 1 ? '' : 's'}`;
   }
 }

@@ -3,8 +3,10 @@ import { DatePipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RealtimeChannel } from '@supabase/supabase-js';
-import { Poll } from '../../core/models/poll.model';
+import { Poll, PollQuestion } from '../../core/models/poll.model';
 import { PollRepository, VoteSelection } from '../../core/services/poll.repository';
+import { PollStoreService } from '../../core/services/poll-store.service';
+import { UiStateService } from '../../core/services/ui-state.service';
 import { VoterIdService } from '../../core/services/voter-id.service';
 import { ResultsPanelComponent } from '../../shared/components/results-panel/results-panel';
 
@@ -18,10 +20,12 @@ import { ResultsPanelComponent } from '../../shared/components/results-panel/res
 export class SurveyDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly repo = inject(PollRepository);
+  private readonly store = inject(PollStoreService);
   private readonly voter = inject(VoterIdService);
   private readonly destroyRef = inject(DestroyRef);
+  readonly ui = inject(UiStateService);
   readonly poll = signal<Poll | null>(null);
-  readonly selected = signal<Record<string, string>>({});
+  readonly selected = signal<Record<string, string[]>>({});
   readonly voted = signal(false);
   readonly loading = signal(true);
   readonly saving = signal(false);
@@ -36,39 +40,48 @@ export class SurveyDetailComponent {
   }
 
   optionSelected(questionId: string, optionId: string): boolean {
-    return this.selected()[questionId] === optionId;
+    return this.selected()[questionId]?.includes(optionId) ?? false;
   }
 
-  select(questionId: string, optionId: string): void {
+  select(question: PollQuestion, optionId: string): void {
     if (this.isLocked()) return;
-    this.selected.update((state) => ({ ...state, [questionId]: optionId }));
+    this.selected.update((state) => this.nextSelection(state, question, optionId));
   }
 
   allQuestionsAnswered(): boolean {
     const questions = this.poll()?.questions ?? [];
-    return questions.length > 0 && questions.every((question) => !!this.selected()[question.id]);
+    return questions.length > 0 && questions.every((question) => this.selected()[question.id]?.length);
   }
 
   async submit(): Promise<void> {
     if (!this.canSubmit()) return;
     this.saving.set(true);
     this.error.set('');
-    try { await this.saveVotes(); }
-    catch (error) { this.error.set(this.message(error)); }
-    finally { this.saving.set(false); }
+    const success = await this.store.submitVotes(this.poll()!.id, this.selections());
+    this.finishSubmit(success);
   }
 
-  statusLabel(): string {
-    if (this.isPast()) return 'Survey ended';
-    return this.voted() ? 'Your response is recorded' : 'Open for voting';
+
+  private nextSelection(
+    state: Record<string, string[]>,
+    question: PollQuestion,
+    optionId: string,
+  ): Record<string, string[]> {
+    const current = state[question.id] ?? [];
+    const next = question.allowMultiple ? this.toggle(current, optionId) : [optionId];
+    return { ...state, [question.id]: next };
   }
 
-  private async saveVotes(): Promise<void> {
-    const poll = this.poll()!;
-    await this.repo.submitVotes(poll.id, this.selections(), this.voter.getId());
-    this.voter.markVoted(poll.id);
+  private toggle(values: string[], value: string): string[] {
+    return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
+  }
+
+  private finishSubmit(success: boolean): void {
+    this.saving.set(false);
+    if (!success) return;
+    this.voter.markVoted(this.poll()!.id);
     this.voted.set(true);
-    await this.refresh();
+    void this.refresh();
   }
 
   private canSubmit(): boolean {
@@ -79,7 +92,8 @@ export class SurveyDetailComponent {
 
   private selections(): VoteSelection[] {
     return (this.poll()?.questions ?? []).map((question) => ({
-      questionId: question.id, optionId: this.selected()[question.id],
+      questionId: question.id,
+      optionIds: this.selected()[question.id] ?? [],
     }));
   }
 
@@ -93,9 +107,10 @@ export class SurveyDetailComponent {
   }
 
   private async loadPoll(id: string): Promise<void> {
-    this.poll.set(await this.repo.getPoll(id));
+    const poll = await this.repo.getPoll(id);
+    this.poll.set(poll);
     this.voted.set(this.voter.hasVoted(id));
-    this.isPast.set(this.checkPast());
+    this.isPast.set(this.checkPast(poll));
     this.subscribe(id);
   }
 
@@ -109,12 +124,11 @@ export class SurveyDetailComponent {
     this.channel = this.repo.subscribeToVotes(id, () => void this.refresh());
   }
 
-  private checkPast(): boolean {
-    const date = this.poll()?.endDate;
-    return !!date && new Date(date).getTime() < Date.now();
+  private checkPast(poll: Poll | null): boolean {
+    return !!poll?.endDate && new Date(poll.endDate).getTime() < Date.now();
   }
 
   private message(error: unknown): string {
-    return error instanceof Error ? error.message : 'Could not submit the survey.';
+    return error instanceof Error ? error.message : 'Could not load the survey.';
   }
 }
