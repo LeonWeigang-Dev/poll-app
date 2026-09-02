@@ -1,6 +1,18 @@
-:host { display: block; min-height: 100vh; background: #fff; }
-.shell { min-height: 100vh; background: #fff; }
-main { min-height: calc(100vh - 76px); }
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #fff;
+}
+
+.shell {
+  min-height: 100vh;
+  background: #fff;
+}
+
+main {
+  min-height: calc(100vh - 76px);
+}
+
 .toast {
   position: fixed;
   right: 24px;
@@ -18,4 +30,12 @@ main { min-height: calc(100vh - 76px); }
   font-size: 13px;
   font-weight: 700;
 }
-.toast button { border: 0; background: transparent; color: inherit; cursor: pointer; font-size: 20px; line-height: 1; }
+
+.toast button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}

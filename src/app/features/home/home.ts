@@ -9,7 +9,7 @@ import { UiStateService } from '../../core/services/ui-state.service';
   standalone: true,
   imports: [CategoryFilterComponent, SurveyCardComponent],
   templateUrl: './home.html',
-  styleUrl: './home.scss',
+  styleUrls: ['./home.scss', './../../core/config/_fonts.scss'],
 })
 export class HomeComponent {
   readonly store = inject(PollStoreService);

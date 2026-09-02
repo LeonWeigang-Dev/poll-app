@@ -1,3 +1,26 @@
-.filter { position: relative; display: flex; align-items: center; gap: 4px; color: #b9aebb; font-size: 10px; }
-.filter select { position: absolute; inset: 0 0 0 auto; width: 100%; opacity: 0; cursor: pointer; }
-.filter .chevron { margin-left: 2px; color: #f4edf5; font-size: 12px; }
+.filter {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: white;
+    font-size: 14px;
+    font-family: "Mulish", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.filter select {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.filter .chevron {
+    margin-left: 2px;
+    color: #f4edf5;
+    font-size: 12px;
+}

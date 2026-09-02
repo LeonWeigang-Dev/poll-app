@@ -1,9 +1,37 @@
-.header { width: 100%; padding: 22px 0 10px; background: #fff; }
-.header-inner { display: block; width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
-.header img { display: block; width: 93px; height: auto; }
-.home-header { background: #33233a; }
+.header {
+  width: 100%;
+  padding: 22px 0 10px;
+  background: #fff;
+}
+
+.header-inner {
+  display: block;
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 0 30px;
+}
+
+.header img {
+  display: block;
+  width: 9rem;
+  height: 9rem;
+}
+
+.home-header {
+  background: #33233a;
+  height: 100px;
+}
+
 @media (max-width: 650px) {
-  .header { padding-top: 18px; }
-  .header-inner { width: calc(100% - 28px); }
-  .header img { width: 83px; }
+  .header {
+    padding-top: 18px;
+  }
+
+  .header-inner {
+    width: calc(100% - 28px);
+  }
+
+  .header img {
+    width: 83px;
+  }
 }

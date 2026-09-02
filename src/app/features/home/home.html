@@ -4,7 +4,8 @@
       <h1>Collect Feedback,<br>Unlock Ideas</h1>
       <p>{{ introText }}</p>
       <button class="primary" type="button" (click)="openCreate()">
-        New survey <span>＋</span>
+        New survey <span></span>
+        <img class="plus-icon" src="/assets/desktop/icon-plus-circle.svg" alt="Plus icon">
       </button>
     </div>
     <img class="hero-visual" src="/assets/desktop/phone-mockup.svg" alt="Survey on a phone">
@@ -14,14 +15,14 @@
     <h2>Your surveys</h2>
 
     @if (store.endingSoon().length && !store.showPast()) {
-      <div class="section-heading">
-        <span>Ending soon surveys</span>
-      </div>
-      <div class="ending-grid">
-        @for (poll of store.endingSoon(); track poll.id) {
-          <app-survey-card [poll]="poll" [highlight]="true" />
-        }
-      </div>
+    <div class="section-heading">
+      <span>Ending soon surveys</span>
+    </div>
+    <div class="ending-grid">
+      @for (poll of store.endingSoon(); track poll.id) {
+      <app-survey-card [poll]="poll" [highlight]="true" />
+      }
+    </div>
     }
 
     <div class="toolbar">
@@ -29,23 +30,21 @@
         <button type="button" [class.active]="!store.showPast()" (click)="store.setPast(false)">Active survey</button>
         <button type="button" [class.active]="store.showPast()" (click)="store.setPast(true)">Past survey</button>
       </div>
-      <app-category-filter
-        [categories]="store.categories()"
-        [selected]="store.selectedCategory()"
+      <app-category-filter [categories]="store.categories()" [selected]="store.selectedCategory()"
         (changed)="store.setCategory($event)" />
     </div>
 
     @if (store.error()) { <p class="error">{{ store.error() }}</p> }
     @if (store.loading()) {
-      <div class="state" aria-live="polite">Loading surveys…</div>
+    <div class="state" aria-live="polite">Loading surveys…</div>
     } @else if (!store.filteredPolls().length) {
-      <div class="state">No surveys found for this filter.</div>
+    <div class="state">No surveys found for this filter.</div>
     } @else {
-      <div class="survey-grid">
-        @for (poll of store.filteredPolls(); track poll.id) {
-          <app-survey-card [poll]="poll" [past]="store.showPast()" />
-        }
-      </div>
+    <div class="survey-grid">
+      @for (poll of store.filteredPolls(); track poll.id) {
+      <app-survey-card [poll]="poll" [past]="store.showPast()" />
+      }
+    </div>
     }
   </section>
 </div>
