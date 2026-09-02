@@ -2,6 +2,7 @@
     position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 4px;
     color: white;
     font-size: 14px;
@@ -9,6 +10,8 @@
     font-optical-sizing: auto;
     font-weight: 600;
     font-style: normal;
+    height: 40px;
+    width: 160px;
 }
 
 .filter select {
@@ -22,5 +25,87 @@
 .filter .chevron {
     margin-left: 2px;
     color: #f4edf5;
-    font-size: 12px;
+    font-size: 14px;
+}
+
+.filter:hover {
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+select,
+::picker(select) {
+    appearance: base-select;
+}
+
+select {
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    background: #ffffff;
+    margin-right: 10px;
+    padding-right: 160px;
+    transition: 0.4s;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+option {
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px;
+    border: 2px solid #ffffff;
+    background: #ffffff;
+    padding: 10px;
+    transition: 0.4s;
+}
+
+option::checkmark {
+    display: none;
+}
+
+::picker(select) {
+    border-radius: 8px;
+}
+
+option:hover,
+option:focus {
+    background: plum;
+}
+
+
+::picker(select) {
+    opacity: 0;
+    transition: all 0.4s allow-discrete;
+}
+
+:open::picker(select) {
+    opacity: 1;
+}
+
+@starting-style {
+    :open::picker(select) {
+        opacity: 0;
+    }
+}
+
+::picker(select) {
+    top: calc(anchor(bottom) + 1px);
+    left: anchor(10%);
+}
+
+@supports not (appearance: base-select) {
+    body::before {
+        content: "Your browser does not support `appearance: base-select`.";
+        color: black;
+        background-color: wheat;
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 40%;
+        text-align: center;
+        padding: 1rem 0;
+        z-index: 1;
+    }
 }
