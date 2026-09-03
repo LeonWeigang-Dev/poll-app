@@ -1,7 +1,11 @@
 <div class="filter">
   <span>Sort by categories</span>
-  <span class="chevron"></span>
-  <select [value]="selected()" (change)="changed.emit(value($event))" aria-label="Filter by category">
-    @for (category of categories(); track category) { <option [value]="category">{{ category }}</option> }
+  <img class="chevron" src="assets/desktop/arrow_drop_down.svg" alt="Chevron">
+
+  <select #selectRef [value]="selected()" (change)="changed.emit(value($event)); selectRef.blur()"
+    aria-label="Filter by category">
+    @for (category of categories(); track category) {
+    <option [value]="category">{{ category }}</option>
+    }
   </select>
 </div>

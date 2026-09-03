@@ -22,15 +22,36 @@
     cursor: pointer;
 }
 
+/* 1. Standard-Zustand (Bild 1) */
 .filter .chevron {
     margin-left: 2px;
-    color: #f4edf5;
     font-size: 14px;
+    content: url('/assets/desktop/arrow_drop_down.svg');
 }
 
+/* 2. Hover-Zustand (Bild 2) */
 .filter:hover {
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.1);
+}
+
+.filter:hover .chevron {
+    content: url('/assets/desktop/arrow_drop_down-hover.svg');
+}
+
+/* 3. Aktiv / Geöffnet-Zustand (Bild 3) 
+   WICHTIG: Muss im Code UNTER :hover stehen, um ihn zu überschreiben! */
+.filter:focus-within,
+.filter:active,
+.filter:has(select:active),
+.filter:has(select:open),
+.filter:has(select:popover-open) {
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+
+    .chevron {
+        content: url('/assets/desktop/arrow_drop_down-opened.svg');
+    }
 }
 
 select,
