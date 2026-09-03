@@ -205,7 +205,12 @@
   }
 
   .ending-grid {
+    display: flex;
+    flex-direction: row !important;
+    overflow-x: auto;
+    align-items: center !important;
     grid-template-columns: 1fr;
+    height: fit-content;
   }
 }
 
