@@ -6,9 +6,10 @@
 }
 
 .page-shell {
-  width: min(1120px, calc(100% - 48px));
+  width: min(1256px, calc(100%));
+  max-width: 1920px;
   margin: 0 auto;
-  padding: 14px 0 80px;
+  padding: 0px 0 80px;
 }
 
 .hero {
@@ -20,7 +21,7 @@
 }
 
 .hero-copy {
-  max-width: 550px;
+  max-width: 650px;
 }
 
 .hero h1 {
@@ -43,6 +44,89 @@
   font-family: "Mulish", cursive;
   font-weight: 400;
   font-style: normal;
+}
+
+/* Container als Bezugspunkt für die Icons */
+.visual-container {
+  position: relative;
+  width: min(300px, 100%);
+  justify-self: center;
+  margin-left: 80px;
+}
+
+.hero-visual {
+  width: 100%;
+  display: block;
+}
+
+/* Allgemeine Icon-Einstellungen */
+.icons {
+  position: absolute;
+  /* Optionale Transition für weiches Starten der Animation */
+  transition: transform 0.3s ease;
+}
+
+/* 3. Exakte Positionierung und Skalierung der 4 Icons */
+.question-icon {
+  top: -5%;
+  right: -12%;
+  width: 75px;
+}
+
+.bubble-icon {
+  top: 22%;
+  left: -28%;
+  width: 120px;
+}
+
+.star-icon {
+  bottom: 12%;
+  left: -18%;
+  width: 85px;
+}
+
+.checkmark-icon {
+  bottom: -4%;
+  left: 18%;
+  width: 70px;
+}
+
+/* 4. Die Schwebe-Animation (Keyframes) */
+@keyframes floatUpAndDown {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-15px);
+    /* Schwebt 15px nach oben */
+  }
+}
+
+/* 5. Hover-Trigger auf dem Container */
+.visual-container:hover .icons {
+  /* Dauerhaftes (infinite) Schweben mit ease-in-out */
+  animation: floatUpAndDown 3s ease-in-out infinite;
+}
+
+/* (Optional) Kleine Verzögerungen, damit sie nicht alle perfekt synchron schweben, 
+   was natürlicher aussieht */
+.visual-container:hover .question-icon {
+  animation-delay: 0s;
+}
+
+.visual-container:hover .bubble-icon {
+  animation-delay: 0.4s;
+}
+
+.visual-container:hover .star-icon {
+  animation-delay: 0.8s;
+}
+
+.visual-container:hover .checkmark-icon {
+  animation-delay: 1.2s;
 }
 
 .primary,
@@ -90,11 +174,6 @@
 .primary:hover {
   background: #FFB770;
   color: #221227;
-}
-
-.hero-visual {
-  width: min(300px, 100%);
-  justify-self: center;
 }
 
 .surveys {
