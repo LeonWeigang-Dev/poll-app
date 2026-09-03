@@ -42,7 +42,7 @@
   font-size: 16px;
   line-height: 1.55;
   font-family: "Mulish", cursive;
-  font-weight: 400;
+  font-weight: 200;
   font-style: normal;
 }
 
@@ -69,19 +69,19 @@
 /* 3. Exakte Positionierung und Skalierung der 4 Icons */
 .question-icon {
   top: -5%;
-  right: -12%;
+  right: -10%;
   width: 75px;
 }
 
 .bubble-icon {
   top: 22%;
-  left: -28%;
+  left: -15%;
   width: 120px;
 }
 
 .star-icon {
-  bottom: 12%;
-  left: -18%;
+  bottom: 5%;
+  left: -13%;
   width: 85px;
 }
 
@@ -118,15 +118,15 @@
 }
 
 .visual-container:hover .bubble-icon {
-  animation-delay: 0.4s;
+  animation-delay: 0.2s;
 }
 
 .visual-container:hover .star-icon {
-  animation-delay: 0.8s;
+  animation-delay: 0.4s;
 }
 
 .visual-container:hover .checkmark-icon {
-  animation-delay: 1.2s;
+  animation-delay: 0.6s;
 }
 
 .primary,
@@ -192,7 +192,7 @@
 }
 
 .section-heading {
-  margin: 0 0 12px;
+  margin: 0 0 20px;
   font-size: 18px;
   color: #fff;
 }
@@ -208,6 +208,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
   margin-bottom: 18px;
+  max-height: 280px;
 }
 
 .toolbar {
@@ -268,7 +269,7 @@
   font-size: 14px;
 }
 
-@media (max-width: 850px) {
+@media (max-width: 854px) {
   .hero {
     grid-template-columns: 1fr;
     padding: 38px 24px 24px;
@@ -277,6 +278,31 @@
   .hero-visual {
     width: 230px;
     margin-top: 22px;
+  }
+
+  .question-icon {
+    top: -5%;
+    right: 15%;
+    width: 70px;
+    height: 70px;
+  }
+
+  .bubble-icon {
+    top: 22%;
+    left: -13%;
+    width: 100px;
+  }
+
+  .star-icon {
+    bottom: 5%;
+    left: -10%;
+    width: 65px;
+  }
+
+  .checkmark-icon {
+    bottom: -4%;
+    left: 10%;
+    width: 40px;
   }
 
   .surveys {
@@ -324,4 +350,49 @@
   .survey-grid {
     grid-template-columns: 1fr;
   }
+
+  @media (max-width: 450px) {
+
+    .visual-container {
+      margin-left: 60px;
+    }
+
+    .hero-visual {
+      width: 200px;
+      margin-top: 20px;
+    }
+
+    .question-icon {
+      top: -5%;
+      right: 15%;
+      width: 60px;
+      height: 60px;
+    }
+
+    .bubble-icon {
+      top: 22%;
+      left: -10%;
+      width: 90px;
+    }
+
+    .star-icon {
+      bottom: 5%;
+      left: -10%;
+      width: 65px;
+    }
+
+    .checkmark-icon {
+      bottom: -4%;
+      left: 10%;
+      width: 40px;
+    }
+
+  }
+
+  @media (max-width: 375px) {
+    .visual-container {
+      margin-left: 40px;
+    }
+  }
+
 }

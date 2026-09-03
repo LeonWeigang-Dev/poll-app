@@ -1,10 +1,11 @@
 .survey-card {
   display: flex;
   min-height: 112px;
+  max-height: 280px;
   flex-direction: column;
   gap: 8px;
   padding: 13px 15px 12px;
-  border-radius: 12px;
+  border-radius: 0 40px 0 0;
   background: #47364d;
   color: #fff;
   text-decoration: none;
@@ -18,6 +19,8 @@
 }
 
 .survey-card.highlight {
+  width: 100%;
+  height: 100%;
   min-height: 250px;
   border-radius: 0 40px 0 0;
   background: #faf5fc;
@@ -39,9 +42,10 @@
 .category,
 .past-label {
   font-size: 14px;
-  opacity: .72;
+  opacity: 1;
+  color: #FFCFA1;
   font-family: "Mulish", cursive;
-  font-weight: 600;
+  font-weight: 400;
   font-style: normal;
 }
 
@@ -62,7 +66,7 @@
 .survey-card.highlight .deadline {
   display: flex;
   align-self: flex-start;
-  margin-top: 50%;
+  margin-top: auto;
   padding: 4px 7px;
   border-radius: 5px;
   background: #ffb768;
@@ -72,13 +76,13 @@
 }
 
 .deadline {
-  align-self: flex-start;
+  align-self: flex-end;
   margin-top: 10px;
   padding: 4px 7px;
-  border-radius: 5px;
   background: #ffb768;
   color: #3d2940;
   font-size: 14px;
+  border-radius: 0 15px 0 0;
 }
 
 @media (max-width: 850px) {
@@ -101,20 +105,6 @@
     min-height: 200px;
     min-width: 250px;
     touch-action: auto;
-/*     display: flex;
-    flex-direction: row !important;
-    overflow-x: auto;
-    gap: 16px;
-    padding: 10px;
-    min-height: 5px;
-    max-height: 100%;
-    align-items: center;
-    margin: 0px;
-    padding: 8px 0px;
-    box-sizing: border-box;
-    scroll-behavior: smooth;
-    font-family: "Inter", sans-serif;
-        unicode-bidi: isolate; */
   }
 
   .survey-card.highlight h3 {
