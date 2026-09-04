@@ -6,26 +6,26 @@
 
 .header-inner {
   display: block;
-  width: min(1256px, calc(100% - 48px));
+  width: min(1120px, calc(100% - 48px));
   margin: 0 auto;
-  padding: 0 30px;
 }
 
 .header img {
   display: block;
-  width: 9rem;
-  height: 9rem;
+  width: 93px;
+  height: auto;
 }
 
 .home-header {
   background: #33233a;
-  height: 100px;
 }
 
-@media (max-width: 1300px) {
-  .header-inner {
-    padding: 0 0;
-  }
+.detail-header {
+  background: #fff;
+}
+
+.detail-header .header-inner {
+  background: #fff;
 }
 
 @media (max-width: 650px) {

@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 @Component({
@@ -10,5 +10,12 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class HeaderComponent {
   private readonly router = inject(Router);
-  readonly isHome = computed(() => this.router.url === '/' || this.router.url === '');
+
+  isHome(): boolean {
+    return this.router.url === '/' || this.router.url === '';
+  }
+
+  isSurveyDetail(): boolean {
+    return this.router.url.startsWith('/survey/');
+  }
 }

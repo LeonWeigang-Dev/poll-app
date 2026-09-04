@@ -19,4 +19,8 @@ export class ResultsPanelComponent {
     const total = this.total(question);
     return total ? Math.round((votes / total) * 100) : 0;
   }
+
+  optionLetter(index: number): string {
+    return String.fromCharCode(65 + index);
+  }
 }

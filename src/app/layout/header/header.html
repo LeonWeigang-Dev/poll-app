@@ -1,6 +1,8 @@
-<header class="header" [class.home-header]="isHome()">
+<header class="header" [class.home-header]="isHome()" [class.detail-header]="isSurveyDetail()">
   <a class="header-inner" routerLink="/" aria-label="Poll App home">
-    <img [src]="isHome() ? '/assets/desktop/poll-app-logo.svg' : '/assets/desktop/poll-app-logo-dark.svg'"
-      alt="Poll App">
+    <img
+      [src]="isSurveyDetail() ? '/assets/desktop/poll-app-logo-dark.svg' : '/assets/desktop/poll-app-logo.svg'"
+      alt="Poll App"
+    >
   </a>
 </header>
