@@ -153,10 +153,11 @@
           {{ saving() ? 'Publishing…' : 'Publish'}} <img class="check-icon" src="/assets/desktop/check.svg"
             alt="Check icon">
         </button>
-        @if (showSuccessToast) {
+
+        @if (showSuccessToast()) {
         <div class="success-toast">
           <span>Your survey is now <br> published</span>
-          <button type="button" class="close-toast" (click)="showSuccessToast = false" aria-label="Close">✕</button>
+          <button type="button" class="close-toast" (click)="showSuccessToast.set(false)" aria-label="Close">✕</button>
         </div>
         }
       </div>

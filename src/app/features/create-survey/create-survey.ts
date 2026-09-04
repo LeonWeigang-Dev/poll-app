@@ -1,6 +1,6 @@
 import { Component, inject, output, signal } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { Router } from '@angular/router'; // Router Hinzugefügt
+import { Router } from '@angular/router';
 import { CreateQuestionInput, POLL_CATEGORIES } from '../../core/models/poll.model';
 import { PollStoreService } from '../../core/services/poll-store.service';
 
@@ -19,11 +19,12 @@ type QuestionGroup = FormGroup<{
 })
 export class CreateSurveyComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly router = inject(Router); // Router instanziiert
+  private readonly router = inject(Router);
   readonly store = inject(PollStoreService);
   readonly closed = output<void>();
   readonly published = output<void>();
   readonly categories = POLL_CATEGORIES;
+
   readonly form = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.maxLength(80)]],
     category: ['Team activities', Validators.required],
@@ -32,8 +33,9 @@ export class CreateSurveyComponent {
     questions: this.fb.array([this.questionGroup()]),
   });
 
+  // Als Signals definiert, um den NG0100-Fehler zu verhindern
   readonly saving = signal(false);
-  showSuccessToast = false; // Steuert die Sichtbarkeit des Toast-Dialogs
+  readonly showSuccessToast = signal(false);
 
   constructor() { this.store.clearError(); }
 
@@ -74,20 +76,21 @@ export class CreateSurveyComponent {
     if (this.form.invalid || this.saving()) return this.validateForm();
     this.store.clearError();
     this.saving.set(true);
+
     const input = this.toInput();
     const result = await this.store.create(input);
     this.saving.set(false);
 
     if (result) {
-      // 1. Toast direkt anzeigen
-      this.showSuccessToast = true;
+      // Toast direkt anzeigen, sobald der Survey erfolgreich erstellt wurde
+      this.showSuccessToast.set(true);
 
-      // 2. Exakt 3,5 Sekunden warten, bevor der Router eingreift
+      // Exakt 3 Sekunden warten, dann zur Detailansicht weiterleiten
       setTimeout(() => {
         const newSurveyId = (result as any).id || result;
         this.router.navigate(['/survey', newSurveyId]);
         this.published.emit();
-      }, 1);
+      }, 3000);
     }
   }
 

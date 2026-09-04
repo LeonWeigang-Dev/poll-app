@@ -496,11 +496,11 @@ small,
   z-index: 100;
 
   animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
-    fadeOut 0.5s ease-in 3.5s forwards;
+    fadeOut 0.5s ease-in 2.5s forwards;
 
   span {
     font-family: "Nerko One", cursive;
-    font-size: 26px;
+    font-size: 24px;
     line-height: 1.2;
     letter-spacing: 0.5px;
   }
