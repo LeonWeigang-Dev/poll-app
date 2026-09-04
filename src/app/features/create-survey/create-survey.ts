@@ -1,5 +1,6 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { Router } from '@angular/router'; // Router Hinzugefügt
 import { CreateQuestionInput, POLL_CATEGORIES } from '../../core/models/poll.model';
 import { PollStoreService } from '../../core/services/poll-store.service';
 
@@ -18,6 +19,7 @@ type QuestionGroup = FormGroup<{
 })
 export class CreateSurveyComponent {
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router); // Router instanziiert
   readonly store = inject(PollStoreService);
   readonly closed = output<void>();
   readonly published = output<void>();
@@ -29,7 +31,9 @@ export class CreateSurveyComponent {
     description: ['', Validators.maxLength(500)],
     questions: this.fb.array([this.questionGroup()]),
   });
-  saving = false;
+
+  readonly saving = signal(false);
+  showSuccessToast = false; // Steuert die Sichtbarkeit des Toast-Dialogs
 
   constructor() { this.store.clearError(); }
 
@@ -67,13 +71,24 @@ export class CreateSurveyComponent {
   }
 
   async publish(): Promise<void> {
-    if (this.form.invalid || this.saving) return this.validateForm();
+    if (this.form.invalid || this.saving()) return this.validateForm();
     this.store.clearError();
-    this.saving = true;
+    this.saving.set(true);
     const input = this.toInput();
     const result = await this.store.create(input);
-    this.saving = false;
-    if (result) this.published.emit();
+    this.saving.set(false);
+
+    if (result) {
+      // 1. Toast direkt anzeigen
+      this.showSuccessToast = true;
+
+      // 2. Exakt 3,5 Sekunden warten, bevor der Router eingreift
+      setTimeout(() => {
+        const newSurveyId = (result as any).id || result;
+        this.router.navigate(['/survey', newSurveyId]);
+        this.published.emit();
+      }, 1);
+    }
   }
 
   trackQuestion(index: number): number { return index; }

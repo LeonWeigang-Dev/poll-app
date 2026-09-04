@@ -1,88 +1,164 @@
 <div class="overlay" (click)="closed.emit()">
   <section class="modal" role="dialog" aria-modal="true" aria-labelledby="create-title"
     (click)="$event.stopPropagation()">
+
+    <!-- Header -->
     <div class="modal-head">
-      <div>
+      <div class="head-left">
         <span class="badge">Draft</span>
         <h1 id="create-title">Create new survey</h1>
       </div>
-      <button class="cancel" type="button" (click)="closed.emit()">Cancel ×</button>
+      <button class="cancel" type="button" (click)="closed.emit()">
+        Cancel <span class="close-x">✕</span>
+      </button>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="publish()" novalidate>
       @if (store.error()) { <p class="form-error">{{ store.error() }}</p> }
-      <div class="top-fields">
-        <label>
-          <span>Survey name <b>*</b></span>
-          <input formControlName="title" placeholder="Survey name"
-            [class.invalid]="form.controls.title.touched && form.controls.title.invalid">
-          @if (form.controls.title.touched && form.controls.title.hasError('required')) { <small>Survey name is
-            required.</small> }
-        </label>
 
-        <label>
-          <span>Choose category <b>*</b></span>
-          <select formControlName="category">
-            @for (category of categories; track category) { <option [value]="category">{{ category }}</option> }
-          </select>
-        </label>
+      <!-- Inneres dunkles Karten-Panel -->
+      <div class="form-card">
+        <div class="form-grid">
 
-        <label>
-          <span>Set end date <em>(optional)</em></span>
-          <input type="date" formControlName="endDate"
-            [class.invalid]="form.controls.endDate.touched && form.controls.endDate.invalid">
-          @if (form.controls.endDate.touched && form.controls.endDate.hasError('pastDate')) { <small>Choose a future
-            date.</small> }
-        </label>
-
-        <label class="wide">
-          <span>Describing text <em>(optional)</em></span>
-          <textarea formControlName="description" placeholder="Tell voters a little more about the survey."></textarea>
-        </label>
-      </div>
-
-      <div class="question-list" formArrayName="questions">
-        @for (question of questions.controls; track trackQuestion($index); let questionIndex = $index) {
-        <section class="question-card" [formGroupName]="questionIndex">
-          <div class="question-head">
-            <span>{{ questionIndex + 1 }}. Question <b>*</b></span>
-            @if (questions.length > 1) {
-            <button type="button" (click)="removeQuestion(questionIndex)" aria-label="Delete question">×</button>
-            }
-          </div>
-
-          <input class="question-input" formControlName="text" placeholder="Choose the activity you prefer"
-            [class.invalid]="question.controls.text.touched && question.controls.text.invalid">
-          <label class="multi-choice">
-            <input type="checkbox" formControlName="allowMultiple">
-            <span>Allow multiple options</span>
-          </label>
-
-          <div class="answers" formArrayName="answers">
-            @for (answer of answerControls(questionIndex).controls; track $index; let answerIndex = $index) {
-            <label>
-              <span>{{ ['A.', 'B.', 'C.', 'D.', 'E.', 'F.'][answerIndex] }}</span>
-              <input [formControlName]="answerIndex" placeholder="Answer"
-                [class.invalid]="answer.touched && answer.invalid">
-              @if (answerControls(questionIndex).length > 2) {
-              <button type="button" (click)="removeAnswer(questionIndex, answerIndex)"
-                aria-label="Delete answer">×</button>
+          <!-- Linke Spalte (Desktop) / Oben (Mobil) -->
+          <div class="grid-left">
+            <label class="field-with-icon">
+              <span>Survey name <b>*</b></span>
+              <div class="input-wrapper">
+                <input formControlName="title" placeholder="Survey name"
+                  [class.invalid]="form.controls.title.touched && form.controls.title.invalid">
+                <button type="button" class="icon-btn" (click)="form.controls.title.setValue('')"
+                  aria-label="Clear title">
+                  <svg class="trash-icon" viewBox="0 0 24 24">
+                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                  </svg>
+                </button>
+              </div>
+              @if (form.controls.title.touched && form.controls.title.hasError('required')) {
+              <small>Survey name is required.</small>
               }
             </label>
-            }
+
+            <div class="row-two-cols">
+              <label class="field-with-icon">
+                <span>Set end date <em>(optional)</em></span>
+                <div class="input-wrapper">
+                  <input type="date" formControlName="endDate"
+                    [class.invalid]="form.controls.endDate.touched && form.controls.endDate.invalid">
+                  <button type="button" class="icon-btn" (click)="form.controls.endDate.setValue('')"
+                    aria-label="Clear date">
+                    <svg class="trash-icon" viewBox="0 0 24 24">
+                      <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                    </svg>
+                  </button>
+                </div>
+              </label>
+
+              <label>
+                <div class="category-field">
+                  <div class="filter-select">
+                    <span>{{ form.controls.category.value || 'Choose category' }}</span>
+                    <img class="chevron" src="/assets/desktop/arrow_drop_down.svg" alt="Chevron">
+
+                    <select #selectRef formControlName="category" (change)="selectRef.blur()"
+                      aria-label="Choose category">
+                      @for (category of categories; track category) {
+                      <option [value]="category">{{ category }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <div class="question-list" formArrayName="questions">
+              @for (question of questions.controls; track trackQuestion($index); let questionIndex = $index) {
+              <section class="question-card" [formGroupName]="questionIndex">
+                <div class="question-head">
+                  <span>{{ questionIndex + 1 }}. Question <b>*</b></span>
+                  @if (questions.length > 1) {
+                  <button type="button" class="icon-btn" (click)="removeQuestion(questionIndex)"
+                    aria-label="Delete question">
+                    <svg class="trash-icon" viewBox="0 0 24 24">
+                      <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                    </svg>
+                  </button>
+                  }
+                </div>
+
+                <input class="question-input" formControlName="text" placeholder="Which date would work best for you?"
+                  [class.invalid]="question.controls.text.touched && question.controls.text.invalid">
+
+                <div class="answers-header">
+                  <span>Answers</span>
+                  <label class="multi-choice">
+                    <input type="checkbox" formControlName="allowMultiple">
+                    <span>Allow multiple answers.</span>
+                  </label>
+                </div>
+
+                <div class="answers" formArrayName="answers">
+                  @for (answer of answerControls(questionIndex).controls; track $index; let answerIndex = $index) {
+                  <div class="answer-row">
+                    <span class="answer-prefix">{{ ['A.', 'B.', 'C.', 'D.', 'E.', 'F.'][answerIndex] }}</span>
+                    <input [formControlName]="answerIndex" placeholder=""
+                      [class.invalid]="answer.touched && answer.invalid">
+                    @if (answerControls(questionIndex).length > 2) {
+                    <button type="button" class="icon-btn" (click)="removeAnswer(questionIndex, answerIndex)"
+                      aria-label="Delete answer">
+                      <svg class="trash-icon" viewBox="0 0 24 24">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                      </svg>
+                    </button>
+                    }
+                  </div>
+                  }
+                </div>
+
+                <button class="add-answer-btn" type="button" (click)="addAnswer(questionIndex)"
+                  [disabled]="answerControls(questionIndex).length >= 6">
+                  Add answer ⊕
+                </button>
+              </section>
+              }
+            </div>
           </div>
 
-          <button class="ghost" type="button" (click)="addAnswer(questionIndex)"
-            [disabled]="answerControls(questionIndex).length >= 6">
-            Add answer ⊕
-          </button>
-        </section>
-        }
+          <!-- Rechte Spalte (Desktop) / Unten (Mobil) -->
+          <div class="grid-right">
+            <label class="field-with-icon wide-textarea">
+              <span>Describing text <em>(optional)</em></span>
+              <div class="input-wrapper">
+                <textarea formControlName="description" placeholder=""></textarea>
+                <button type="button" class="icon-btn" (click)="form.controls.description.setValue('')"
+                  aria-label="Clear description">
+                  <svg class="trash-icon" viewBox="0 0 24 24">
+                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                  </svg>
+                </button>
+              </div>
+            </label>
+
+            <button class="add-question-btn" type="button" (click)="addQuestion()">
+              Add next question <img src="assets/desktop/add_circle.svg" alt="plus icon">
+            </button>
+          </div>
+
+        </div>
       </div>
 
+      <!-- Footer -->
       <div class="modal-foot">
-        <button class="ghost add-question" type="button" (click)="addQuestion()">Add next question ⊕</button>
-        <button class="publish" [disabled]="saving" type="submit">{{ saving ? 'Publishing…' : 'Publish ✓' }}</button>
+        <button class="publish" [disabled]="saving()" type="submit">
+          {{ saving() ? 'Publishing…' : 'Publish'}} <img class="check-icon" src="/assets/desktop/check.svg"
+            alt="Check icon">
+        </button>
+        @if (showSuccessToast) {
+        <div class="success-toast">
+          <span>Your survey is now <br> published</span>
+          <button type="button" class="close-toast" (click)="showSuccessToast = false" aria-label="Close">✕</button>
+        </div>
+        }
       </div>
     </form>
   </section>
