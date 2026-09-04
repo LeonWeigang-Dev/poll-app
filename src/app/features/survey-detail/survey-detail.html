@@ -1,7 +1,10 @@
 <div class="detail-page">
   <div class="detail-top">
     <a routerLink="/" class="back">← Back to surveys</a>
-    <button class="create" type="button" (click)="ui.openCreateSurvey()">Create survey</button>
+    <button class="create" type="button" (click)="openCreate()">
+      Create survey <span></span>
+      <img class="plus-icon" src="/assets/desktop/icon-plus-circle.svg" alt="Plus icon">
+    </button>
   </div>
 
   @if (loading()) {

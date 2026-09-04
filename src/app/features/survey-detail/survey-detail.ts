@@ -39,6 +39,8 @@ export class SurveyDetailComponent {
     this.destroyRef.onDestroy(() => void this.repo.removeChannel(this.channel));
   }
 
+  openCreate(): void { this.ui.openCreateSurvey(); }
+
   optionSelected(questionId: string, optionId: string): boolean {
     return this.selected()[questionId]?.includes(optionId) ?? false;
   }

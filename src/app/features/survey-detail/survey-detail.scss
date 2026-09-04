@@ -30,19 +30,42 @@
 
 .create {
   border: 0;
-  border-radius: 8px;
-  padding: 12px 24px;
-  background: #FFD2A5;
-  color: #31233a;
+  padding: 10px 13px;
+  background: #FFCFA1;
+  color: #38253f;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 800;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.9;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 18px;
 }
+
+.create span {
+  margin-left: 5px;
+}
+
+.plus-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-left: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: width .2s ease, margin-left .2s ease, opacity .2s ease;
+}
+
+.create:hover .plus-icon {
+  width: 24px;
+  margin-left: 5px;
+  opacity: 1;
+}
+
+.create:hover {
+  background: #FFB770;
+  color: #221227;
+}
+
 
 .detail-grid {
   display: grid;
@@ -204,7 +227,7 @@
   border: 0;
   border-radius: 8px;
   padding: 12px 24px;
-  background: #F4E5D3;
+  background: #FFB7704D;
   color: #31233a;
   font-size: 14px;
   font-weight: 800;
