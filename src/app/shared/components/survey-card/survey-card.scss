@@ -13,6 +13,11 @@
   transition: transform .18s ease, background .18s ease;
 }
 
+.survey-card h3 {
+  font-family: 'Mulish';
+  font-weight: 500;
+}
+
 .survey-card:hover {
   transform: translateY(-2px);
   background: #4f3d55;
@@ -26,6 +31,7 @@
   background: #faf5fc;
   color: #33243a;
   max-width: 300px;
+  padding: 30px 30px 30px;
 
   .category {
     color: #38253f;
@@ -48,8 +54,8 @@
   font-size: 14px;
   opacity: 1;
   color: #FFCFA1;
-  font-family: "Mulish", cursive;
-  font-weight: 400;
+  font-family: "Mulish";
+  font-weight: 600;
   font-style: normal;
 }
 
@@ -62,8 +68,8 @@
   max-width: 270px;
   font-size: 26px;
   line-height: 1.13;
-  font-family: "Mulish", cursive;
-  font-weight: 600;
+  font-family: "Mulish";
+  font-weight: 700;
   font-style: normal;
 }
 
@@ -77,6 +83,7 @@
   color: #3d2940;
   font-size: 14px;
   border-radius: 0 15px 0 0;
+  font-weight: 500;
 }
 
 .deadline {

@@ -30,8 +30,8 @@
   font-size: clamp(45px, 6vw, 68px);
   line-height: .94;
   letter-spacing: -2px;
-  font-family: "Nerko One", cursive;
-  font-weight: 800;
+  font-family: "Nerko One";
+  font-weight: 400;
   font-style: normal;
 }
 
@@ -41,8 +41,8 @@
   color: #eee6ef;
   font-size: 16px;
   line-height: 1.55;
-  font-family: "Mulish", cursive;
-  font-weight: 200;
+  font-family: "Mulish";
+  font-weight: 600;
   font-style: normal;
 }
 
@@ -139,6 +139,9 @@
   justify-content: center;
   border-radius: 10px;
   font-size: 18px;
+  font-family: "Nokora";
+  font-weight: 700;
+  transition: background-color .2s ease;
 }
 
 .primary span {
@@ -151,14 +154,16 @@
   flex-shrink: 0;
   margin-left: 0;
   opacity: 0;
+  display: none;
   overflow: hidden;
-  transition: width .2s ease, margin-left .2s ease, opacity .2s ease;
 }
 
 .primary:hover .plus-icon {
+  display: flex;
   width: 24px;
   margin-left: 5px;
   opacity: 1;
+  transition: width .2s ease, margin-left .2s ease, opacity .2s ease;
 }
 
 .primary:hover {
@@ -174,22 +179,22 @@
   margin: 0 0 28px;
   color: #ffab60;
   text-align: center;
-  font-size: 40px;
+  font-size: 50px;
   line-height: 1;
-  font-family: "Nerko One", cursive;
-  font-weight: 800;
+  font-family: "Nerko One";
+  font-weight: 400;
   font-style: normal;
 }
 
 .section-heading {
   margin: 0 0 20px;
-  font-size: 18px;
+  font-size: 20px;
   color: #fff;
 }
 
 .section-heading span {
-  font-family: "Mulish", cursive;
-  font-weight: 400;
+  font-family: "Mulish";
+  font-weight: 500;
   font-style: normal;
 }
 
@@ -215,14 +220,14 @@
 
 .tabs button {
   border: 0;
-  border-radius: 9px;
+  border-radius: 20px;
   padding: 7px 11px;
   background: #FEE9D4;
   color: #38253f;
   cursor: pointer;
   font-size: 14px;
-  font-family: "Nokora", cursive;
-  font-weight: 600;
+  font-family: "Nokora";
+  font-weight: 400;
   font-style: normal;
 }
 

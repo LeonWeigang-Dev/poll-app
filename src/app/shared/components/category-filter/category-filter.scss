@@ -5,13 +5,13 @@
     justify-content: center;
     gap: 4px;
     color: white;
-    font-size: 14px;
-    font-family: "Mulish", sans-serif;
+    font-size: 16px;
+    font-family: "Mulish";
     font-optical-sizing: auto;
     font-weight: 600;
     font-style: normal;
     height: 40px;
-    width: 160px;
+    width: 170px;
 }
 
 .filter select {
@@ -20,6 +20,7 @@
     width: 100%;
     opacity: 0;
     cursor: pointer;
+    font-size: 14px;
 }
 
 .filter .chevron {
@@ -72,10 +73,13 @@ option {
     display: flex;
     justify-content: flex-start;
     gap: 20px;
+    width: 100%;
     border: 2px solid #ffffff;
     background: #ffffff;
     padding: 10px;
-    transition: 0.4s;
+    transition: 0.2s;
+    font-family: 'Mulish';
+    font-weight: 400;
 }
 
 option::checkmark {
@@ -88,7 +92,7 @@ option::checkmark {
 
 option:hover,
 option:focus {
-    background: plum;
+    background: #F4E9FB;
 }
 
 
