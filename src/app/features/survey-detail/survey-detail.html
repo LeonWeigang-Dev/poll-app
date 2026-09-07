@@ -15,7 +15,6 @@
   <section class="detail-grid">
     <article class="survey-panel">
 
-      <!-- Badge ist nun oberhalb der Meta-Zeile platziert -->
       <span class="meta-badge">{{ isPast() ? 'Published' : voted() ? 'Completed' : 'Published' }}</span>
 
       <div class="meta">
@@ -33,7 +32,6 @@
       <div class="completed-note">Thank you! Your answers have been recorded.</div>
       }
 
-      <!-- 2-Spalten-Grid für die Fragen -->
       <div class="questions-grid">
         @for (question of poll()!.questions; track question.id; let index = $index) {
         <section class="question">

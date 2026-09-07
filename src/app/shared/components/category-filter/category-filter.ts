@@ -11,6 +11,11 @@ export class CategoryFilterComponent {
   readonly selected = input.required<string>();
   readonly changed = output<string>();
 
+  /**
+   * Extracts the selected category from a change event.
+   * @param event - The select change event.
+   * @returns The selected category value.
+   */
   value(event: Event): string {
     return (event.target as HTMLSelectElement).value;
   }

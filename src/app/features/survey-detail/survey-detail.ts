@@ -33,28 +33,54 @@ export class SurveyDetailComponent {
   readonly isPast = signal(false);
   private channel: RealtimeChannel | null = null;
 
+  /**
+   * Registers route loading and realtime channel cleanup.
+   */
   constructor() {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => void this.load(params.get('id')));
     this.destroyRef.onDestroy(() => void this.repo.removeChannel(this.channel));
   }
 
-  openCreate(): void { this.ui.openCreateSurvey(); }
+  /**
+   * Opens the create survey dialog.
+   */
+  openCreate(): void {
+    this.ui.openCreateSurvey();
+  }
 
+  /**
+   * Checks whether an option is currently selected.
+   * @param questionId - The question identifier.
+   * @param optionId - The option identifier.
+   * @returns Whether the option is selected.
+   */
   optionSelected(questionId: string, optionId: string): boolean {
     return this.selected()[questionId]?.includes(optionId) ?? false;
   }
 
+  /**
+   * Updates the selected answer for a question.
+   * @param question - The question being answered.
+   * @param optionId - The selected option identifier.
+   */
   select(question: PollQuestion, optionId: string): void {
     if (this.isLocked()) return;
     this.selected.update((state) => this.nextSelection(state, question, optionId));
   }
 
+  /**
+   * Checks whether every question has at least one selected option.
+   * @returns Whether all questions are answered.
+   */
   allQuestionsAnswered(): boolean {
     const questions = this.poll()?.questions ?? [];
     return questions.length > 0 && questions.every((question) => this.selected()[question.id]?.length);
   }
 
+  /**
+   * Submits the selected answers when the survey is ready.
+   */
   async submit(): Promise<void> {
     if (!this.canSubmit()) return;
     this.saving.set(true);
@@ -63,7 +89,13 @@ export class SurveyDetailComponent {
     this.finishSubmit(success);
   }
 
-
+  /**
+   * Calculates the next selection state for one question.
+   * @param state - The current selection state.
+   * @param question - The question being answered.
+   * @param optionId - The selected option identifier.
+   * @returns The updated selection state.
+   */
   private nextSelection(
     state: Record<string, string[]>,
     question: PollQuestion,
@@ -74,10 +106,20 @@ export class SurveyDetailComponent {
     return { ...state, [question.id]: next };
   }
 
+  /**
+   * Toggles one option inside a selection list.
+   * @param values - The current option identifiers.
+   * @param value - The option identifier to toggle.
+   * @returns The updated option identifiers.
+   */
   private toggle(values: string[], value: string): string[] {
     return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
   }
 
+  /**
+   * Finalizes a successful or failed vote submission.
+   * @param success - Whether the vote submission succeeded.
+   */
   private finishSubmit(success: boolean): void {
     this.saving.set(false);
     if (!success) return;
@@ -86,12 +128,26 @@ export class SurveyDetailComponent {
     void this.refresh();
   }
 
+  /**
+   * Determines whether the vote form can be submitted.
+   * @returns Whether submission is currently allowed.
+   */
   private canSubmit(): boolean {
     return !this.isLocked() && !this.saving() && this.allQuestionsAnswered();
   }
 
-  private isLocked(): boolean { return this.isPast() || this.voted(); }
+  /**
+   * Checks whether the current survey is locked for editing.
+   * @returns Whether the survey cannot be answered.
+   */
+  private isLocked(): boolean {
+    return this.isPast() || this.voted();
+  }
 
+  /**
+   * Converts current selections into repository input.
+   * @returns The selected options grouped by question.
+   */
   private selections(): VoteSelection[] {
     return (this.poll()?.questions ?? []).map((question) => ({
       questionId: question.id,
@@ -99,15 +155,27 @@ export class SurveyDetailComponent {
     }));
   }
 
+  /**
+   * Loads the survey for the current route identifier.
+   * @param id - The survey identifier.
+   */
   private async load(id: string | null): Promise<void> {
     if (!id) return;
     this.loading.set(true);
     this.error.set('');
-    try { await this.loadPoll(id); }
-    catch (error) { this.error.set(this.message(error)); }
-    finally { this.loading.set(false); }
+    try {
+      await this.loadPoll(id);
+    } catch (error) {
+      this.error.set(this.message(error));
+    } finally {
+      this.loading.set(false);
+    }
   }
 
+  /**
+   * Loads the survey and starts its realtime subscription.
+   * @param id - The survey identifier.
+   */
   private async loadPoll(id: string): Promise<void> {
     const poll = await this.repo.getPoll(id);
     this.poll.set(poll);
@@ -116,20 +184,37 @@ export class SurveyDetailComponent {
     this.subscribe(id);
   }
 
+  /**
+   * Refreshes the currently displayed survey.
+   */
   private async refresh(): Promise<void> {
     const current = this.poll();
     if (current) this.poll.set(await this.repo.getPoll(current.id));
   }
 
+  /**
+   * Creates a realtime subscription for survey votes.
+   * @param id - The survey identifier.
+   */
   private subscribe(id: string): void {
     void this.repo.removeChannel(this.channel);
     this.channel = this.repo.subscribeToVotes(id, () => void this.refresh());
   }
 
+  /**
+   * Checks whether the survey deadline has passed.
+   * @param poll - The survey to inspect.
+   * @returns Whether the survey has ended.
+   */
   private checkPast(poll: Poll | null): boolean {
     return !!poll?.endDate && new Date(poll.endDate).getTime() < Date.now();
   }
 
+  /**
+   * Converts an unknown error into a readable message.
+   * @param error - The caught error value.
+   * @returns The user-facing error message.
+   */
   private message(error: unknown): string {
     return error instanceof Error ? error.message : 'Could not load the survey.';
   }

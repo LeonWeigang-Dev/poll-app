@@ -46,7 +46,6 @@
   font-style: normal;
 }
 
-/* Container als Bezugspunkt für die Icons */
 .visual-container {
   position: relative;
   width: min(300px, 100%);
@@ -59,14 +58,11 @@
   display: block;
 }
 
-/* Allgemeine Icon-Einstellungen */
 .icons {
   position: absolute;
-  /* Optionale Transition für weiches Starten der Animation */
   transition: transform 0.3s ease;
 }
 
-/* 3. Exakte Positionierung und Skalierung der 4 Icons */
 .question-icon {
   top: -5%;
   right: -10%;
@@ -91,7 +87,6 @@
   width: 70px;
 }
 
-/* 4. Die Schwebe-Animation (Keyframes) */
 @keyframes floatUpAndDown {
 
   0%,
@@ -101,18 +96,13 @@
 
   50% {
     transform: translateY(-15px);
-    /* Schwebt 15px nach oben */
   }
 }
 
-/* 5. Hover-Trigger auf dem Container */
 .visual-container:hover .icons {
-  /* Dauerhaftes (infinite) Schweben mit ease-in-out */
   animation: floatUpAndDown 3s ease-in-out infinite;
 }
 
-/* (Optional) Kleine Verzögerungen, damit sie nicht alle perfekt synchron schweben, 
-   was natürlicher aussieht */
 .visual-container:hover .question-icon {
   animation-delay: 0s;
 }

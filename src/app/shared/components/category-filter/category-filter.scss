@@ -22,14 +22,12 @@
     cursor: pointer;
 }
 
-/* 1. Standard-Zustand (Bild 1) */
 .filter .chevron {
     margin-left: 2px;
     font-size: 14px;
     content: url('/assets/desktop/arrow_drop_down.svg');
 }
 
-/* 2. Hover-Zustand (Bild 2) */
 .filter:hover {
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.1);
@@ -39,8 +37,6 @@
     content: url('/assets/desktop/arrow_drop_down-hover.svg');
 }
 
-/* 3. Aktiv / Geöffnet-Zustand (Bild 3) 
-   WICHTIG: Muss im Code UNTER :hover stehen, um ihn zu überschreiben! */
 .filter:focus-within,
 .filter:active,
 .filter:has(select:active),

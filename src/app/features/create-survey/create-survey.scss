@@ -180,7 +180,6 @@ label {
     }
   }
 
-  /* 3. Aktiv / Geöffnet-Zustand */
   &:focus-within,
   &:active,
   &:has(select:active),
@@ -195,7 +194,6 @@ label {
   }
 }
 
-/* Modeme Custom-Select Picker Styles */
 select,
 ::picker(select) {
   appearance: base-select;
@@ -289,7 +287,6 @@ textarea {
   align-items: flex-start;
 }
 
-/* Icons & Clear Buttons */
 .icon-btn {
   border: 0;
   background: transparent;
@@ -312,7 +309,6 @@ textarea {
   fill: #fff;
 }
 
-/* Frage Karte */
 .question-list {
   display: flex;
   flex-direction: column;
@@ -545,7 +541,6 @@ small,
   }
 }
 
-/* Responsive Layout (Mobilgeräte) */
 @media (max-width: 768px) {
   .modal {
     padding: 20px 18px;

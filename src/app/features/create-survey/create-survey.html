@@ -2,7 +2,6 @@
   <section class="modal" role="dialog" aria-modal="true" aria-labelledby="create-title"
     (click)="$event.stopPropagation()">
 
-    <!-- Header -->
     <div class="modal-head">
       <div class="head-left">
         <span class="badge">Draft</span>
@@ -16,11 +15,9 @@
     <form [formGroup]="form" (ngSubmit)="publish()" novalidate>
       @if (store.error()) { <p class="form-error">{{ store.error() }}</p> }
 
-      <!-- Inneres dunkles Karten-Panel -->
       <div class="form-card">
         <div class="form-grid">
 
-          <!-- Linke Spalte (Desktop) / Oben (Mobil) -->
           <div class="grid-left">
             <label class="field-with-icon">
               <span>Survey name <b>*</b></span>
@@ -124,7 +121,6 @@
             </div>
           </div>
 
-          <!-- Rechte Spalte (Desktop) / Unten (Mobil) -->
           <div class="grid-right">
             <label class="field-with-icon wide-textarea">
               <span>Describing text <em>(optional)</em></span>
@@ -147,7 +143,6 @@
         </div>
       </div>
 
-      <!-- Footer -->
       <div class="modal-foot">
         <button class="publish" [disabled]="saving()" type="submit">
           {{ saving() ? 'Publishing…' : 'Publish'}} <img class="check-icon" src="/assets/desktop/check.svg"

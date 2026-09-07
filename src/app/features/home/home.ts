@@ -17,7 +17,17 @@ export class HomeComponent {
   readonly selectedTab = computed(() => this.store.showPast() ? 'Past survey' : 'Active survey');
   readonly introText = 'Create and share surveys in minutes – from team events to workplace culture. Collect opinions, engage your audience, and turn feedback into action.';
 
-  constructor() { void this.store.load(); }
+  /**
+   * Loads the surveys when the home component is created.
+   */
+  constructor() {
+    void this.store.load();
+  }
 
-  openCreate(): void { this.ui.openCreateSurvey(); }
+  /**
+   * Opens the create survey dialog.
+   */
+  openCreate(): void {
+    this.ui.openCreateSurvey();
+  }
 }

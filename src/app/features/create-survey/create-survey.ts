@@ -33,14 +33,28 @@ export class CreateSurveyComponent {
     questions: this.fb.array([this.questionGroup()]),
   });
 
-  // Als Signals definiert, um den NG0100-Fehler zu verhindern
   readonly saving = signal(false);
   readonly showSuccessToast = signal(false);
 
-  constructor() { this.store.clearError(); }
+  /**
+   * Clears the previous store error when the form is created.
+   */
+  constructor() {
+    this.store.clearError();
+  }
 
-  get questions(): FormArray<QuestionGroup> { return this.form.controls.questions; }
+  /**
+   * Returns the question form array.
+   * @returns The survey questions form array.
+   */
+  get questions(): FormArray<QuestionGroup> {
+    return this.form.controls.questions;
+  }
 
+  /**
+   * Creates a new question form group.
+   * @returns A configured question form group.
+   */
   questionGroup(): QuestionGroup {
     return this.fb.nonNullable.group({
       text: ['', [Validators.required, Validators.maxLength(180)]],
@@ -49,57 +63,107 @@ export class CreateSurveyComponent {
     });
   }
 
+  /**
+   * Creates a validated answer form control.
+   * @returns A configured answer form control.
+   */
   answerControl(): FormControl<string> {
     return this.fb.nonNullable.control('', [Validators.required, Validators.maxLength(120)]);
   }
 
+  /**
+   * Returns the answer controls for one question.
+   * @param index - The question index.
+   * @returns The answer form array.
+   */
   answerControls(index: number): FormArray<FormControl<string>> {
     return this.questions.at(index).controls.answers;
   }
-  addQuestion(): void { this.questions.push(this.questionGroup()); }
 
+  /**
+   * Adds a new question to the survey form.
+   */
+  addQuestion(): void {
+    this.questions.push(this.questionGroup());
+  }
+
+  /**
+   * Adds an answer while respecting the maximum number of answers.
+   * @param questionIndex - The question index.
+   */
   addAnswer(questionIndex: number): void {
     const answers = this.answerControls(questionIndex);
     if (answers.length < 6) answers.push(this.answerControl());
   }
 
+  /**
+   * Removes a question when at least one question remains.
+   * @param index - The question index.
+   */
   removeQuestion(index: number): void {
     if (this.questions.length > 1) this.questions.removeAt(index);
   }
 
+  /**
+   * Removes an answer when at least two answers remain.
+   * @param questionIndex - The question index.
+   * @param answerIndex - The answer index.
+   */
   removeAnswer(questionIndex: number, answerIndex: number): void {
     const answers = this.answerControls(questionIndex);
     if (answers.length > 2) answers.removeAt(answerIndex);
   }
 
+  /**
+   * Validates and publishes the current survey form.
+   */
   async publish(): Promise<void> {
     if (this.form.invalid || this.saving()) return this.validateForm();
     this.store.clearError();
     this.saving.set(true);
-
-    const input = this.toInput();
-    const result = await this.store.create(input);
+    const result = await this.store.create(this.toInput());
     this.saving.set(false);
-
-    if (result) {
-      // Toast direkt anzeigen, sobald der Survey erfolgreich erstellt wurde
-      this.showSuccessToast.set(true);
-
-      // Exakt 3 Sekunden warten, dann zur Detailansicht weiterleiten
-      setTimeout(() => {
-        const newSurveyId = (result as any).id || result;
-        this.router.navigate(['/survey', newSurveyId]);
-        this.published.emit();
-      }, 3000);
-    }
+    if (result) this.handlePublishSuccess(result);
   }
 
-  trackQuestion(index: number): number { return index; }
+  /**
+   * Handles the successful survey creation flow.
+   * @param result - The created survey result.
+   */
+  private handlePublishSuccess(result: NonNullable<Awaited<ReturnType<PollStoreService['create']>>>): void {
+    this.showSuccessToast.set(true);
+    setTimeout(() => void this.navigateToSurvey(result.id), 3000);
+  }
 
+  /**
+   * Navigates to the created survey and emits the publish event.
+   * @param surveyId - The created survey identifier.
+   */
+  private async navigateToSurvey(surveyId: string): Promise<void> {
+    await this.router.navigate(['/survey', surveyId]);
+    this.published.emit();
+  }
+
+  /**
+   * Returns the current index for Angular tracking.
+   * @param index - The question index.
+   * @returns The supplied index.
+   */
+  trackQuestion(index: number): number {
+    return index;
+  }
+
+  /**
+   * Marks every invalid form field as touched.
+   */
   private validateForm(): void {
     this.form.markAllAsTouched();
   }
 
+  /**
+   * Converts the form value into the survey creation model.
+   * @returns The normalized survey input.
+   */
   private toInput() {
     const value = this.form.getRawValue();
     return {
@@ -111,19 +175,27 @@ export class CreateSurveyComponent {
     };
   }
 
+  /**
+   * Maps form questions to repository input data.
+   * @param questions - The raw question form values.
+   * @returns The normalized question inputs.
+   */
   private mapQuestions(questions: ReturnType<typeof this.form.getRawValue>['questions']): CreateQuestionInput[] {
     return questions.map((question) => ({
       text: question.text.trim(),
       allowMultiple: question.allowMultiple,
-      answers: question.answers.map((answer, index) => ({
-        label: answer.trim(),
-        sort_number: index
-      })),
+      answers: question.answers.map((answer, index) => ({ label: answer.trim(), sort_number: index })),
     }));
   }
 
+  /**
+   * Validates that a selected deadline is in the future.
+   * @param control - The form control containing the deadline.
+   * @returns A validation error or null.
+   */
   private futureDateValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value) return null;
-    return new Date(`${control.value}T23:59:59`).getTime() > Date.now() ? null : { pastDate: true };
+    const time = new Date(`${control.value}T23:59:59`).getTime();
+    return time > Date.now() ? null : { pastDate: true };
   }
 }

@@ -2,12 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { CreatePollInput, Poll, PollQuestion } from '../models/poll.model';
 import { SupabaseService } from './supabase.service';
-
 export interface VoteSelection {
   questionId: string;
   optionIds: string[];
 }
-
 interface VoteRow { id: string; }
 interface OptionRow {
   id: string;
@@ -31,45 +29,59 @@ interface SurveyRow {
   created_at: string;
   questions?: QuestionRow[];
 }
-
 @Injectable({ providedIn: 'root' })
 export class PollRepository {
   private readonly supabase = inject(SupabaseService);
-
-  // In poll.repository.ts
+  /**
+   * Loads all surveys from Supabase or the local demo data.
+   * @returns The available surveys.
+   */
   async getPolls(): Promise<Poll[]> {
     if (!this.supabase.client) return this.demoPolls();
     const { data, error } = await this.queryPolls();
-
     if (error) throw error;
     return (data as SurveyRow[]).map((poll) => this.mapPoll(poll));
   }
-
+  /**
+   * Loads a single survey by identifier.
+   * @param id - The survey identifier.
+   * @returns The survey or null when it does not exist.
+   */
   async getPoll(id: string): Promise<Poll | null> {
     if (!this.supabase.client) return this.findDemoPoll(id);
     const { data, error } = await this.queryPoll(id);
     if (error) throw error;
     return data ? this.mapPoll(data as SurveyRow) : null;
   }
-
+  /**
+   * Creates a complete survey with its questions and options.
+   * @param input - The survey data to persist.
+   * @returns The newly created survey.
+   */
   async createPoll(input: CreatePollInput): Promise<Poll> {
     if (!this.supabase.client) return this.createDemoPoll(input);
     const survey = await this.insertSurvey(input);
     await this.insertQuestions(survey.id, input.questions);
     return this.getCreatedPoll(survey.id);
   }
-
-  async submitVotes(
-    surveyId: string,
-    selections: VoteSelection[],
-    voterId: string,
-  ): Promise<void> {
+  /**
+   * Stores the selected options as votes.
+   * @param surveyId - The survey identifier.
+   * @param selections - The selected answers grouped by question.
+   * @param voterId - The local voter identifier.
+   */
+  async submitVotes(surveyId: string, selections: VoteSelection[], voterId: string): Promise<void> {
     if (!this.supabase.client) return;
     const rows = this.voteRows(surveyId, selections, voterId);
     const { error } = await this.supabase.client.from('votes').insert(rows);
     if (error) throw error;
   }
-
+  /**
+   * Subscribes to vote changes for one survey.
+   * @param surveyId - The survey identifier.
+   * @param refresh - The callback executed after a change.
+   * @returns The realtime channel or null when Supabase is unavailable.
+   */
   subscribeToVotes(surveyId: string, refresh: () => void): RealtimeChannel | null {
     if (!this.supabase.client) return null;
     return this.supabase.client
@@ -77,19 +89,29 @@ export class PollRepository {
       .on('postgres_changes', this.voteChangeFilter(surveyId), refresh)
       .subscribe();
   }
-
+  /**
+   * Removes an active realtime channel.
+   * @param channel - The channel to remove.
+   */
   async removeChannel(channel: RealtimeChannel | null): Promise<void> {
     if (!channel || !this.supabase.client) return;
     await this.supabase.client.removeChannel(channel);
   }
-
+  /**
+   * Requests all surveys with their related questions and options.
+   * @returns The Supabase query for all surveys.
+   */
   private queryPolls() {
     return this.supabase.client!
       .from('surveys')
       .select('*, questions(*, options(*, votes(*)))')
       .order('end_date', { ascending: true, nullsFirst: false });
   }
-
+  /**
+   * Requests one survey with its related questions and options.
+   * @param id - The survey identifier.
+   * @returns The Supabase query for the survey.
+   */
   private queryPoll(id: string) {
     return this.supabase.client!
       .from('surveys')
@@ -97,13 +119,21 @@ export class PollRepository {
       .eq('id', id)
       .maybeSingle();
   }
-
+  /**
+   * Loads the survey that was created most recently.
+   * @param id - The created survey identifier.
+   * @returns The created survey.
+   */
   private async getCreatedPoll(id: string): Promise<Poll> {
     const poll = await this.getPoll(id);
     if (!poll) throw new Error('Survey could not be loaded after creation.');
     return poll;
   }
-
+  /**
+   * Inserts the survey metadata into Supabase.
+   * @param input - The survey metadata.
+   * @returns The generated survey identifier.
+   */
   private async insertSurvey(input: CreatePollInput): Promise<{ id: string }> {
     const { data, error } = await this.supabase.client!
       .from('surveys')
@@ -118,17 +148,24 @@ export class PollRepository {
     if (error) throw error;
     return data;
   }
-
-  private async insertQuestions(
-    surveyId: string,
-    questions: CreatePollInput['questions'],
-  ): Promise<void> {
+  /**
+   * Inserts every question and its options for a survey.
+   * @param surveyId - The survey identifier.
+   * @param questions - The questions to insert.
+   */
+  private async insertQuestions(surveyId: string, questions: CreatePollInput['questions']): Promise<void> {
     for (const [index, question] of questions.entries()) {
       const id = await this.insertQuestion(surveyId, question, index);
       await this.insertOptions(id, question.answers);
     }
   }
-
+  /**
+   * Inserts one question into Supabase.
+   * @param surveyId - The survey identifier.
+   * @param question - The question to insert.
+   * @param position - The question order.
+   * @returns The generated question identifier.
+   */
   private async insertQuestion(
     surveyId: string,
     question: CreatePollInput['questions'][number],
@@ -142,7 +179,11 @@ export class PollRepository {
     if (error) throw error;
     return data.id;
   }
-
+  /**
+   * Inserts all options belonging to one question.
+   * @param questionId - The question identifier.
+   * @param answers - The options to insert.
+   */
   private async insertOptions(
     questionId: string,
     answers: CreatePollInput['questions'][number]['answers'],
@@ -155,7 +196,13 @@ export class PollRepository {
     const { error } = await this.supabase.client!.from('options').insert(rows);
     if (error) throw error;
   }
-
+  /**
+   * Converts vote selections into rows for Supabase insertion.
+   * @param surveyId - The survey identifier.
+   * @param selections - The selected options grouped by question.
+   * @param voterId - The local voter identifier.
+   * @returns The rows to insert into the votes table.
+   */
   private voteRows(surveyId: string, selections: VoteSelection[], voterId: string) {
     return selections.flatMap((selection) => selection.optionIds.map((optionId) => ({
       survey_id: surveyId,
@@ -164,11 +211,19 @@ export class PollRepository {
       voter_id: voterId,
     })));
   }
-
+  /**
+   * Builds the realtime filter for a survey's vote changes.
+   * @param surveyId - The survey identifier.
+   * @returns The realtime filter configuration.
+   */
   private voteChangeFilter(surveyId: string) {
     return { event: '*', schema: 'public', table: 'votes', filter: `survey_id=eq.${surveyId}` } as const;
   }
-
+  /**
+   * Maps a Supabase survey row into the application model.
+   * @param row - The database survey row.
+   * @returns The mapped survey.
+   */
   private mapPoll(row: SurveyRow): Poll {
     return {
       id: row.id,
@@ -180,7 +235,11 @@ export class PollRepository {
       questions: this.mapQuestions(row.questions ?? []),
     };
   }
-
+  /**
+   * Maps and sorts the questions of a survey.
+   * @param questions - The database question rows.
+   * @returns The mapped questions.
+   */
   private mapQuestions(questions: QuestionRow[]): PollQuestion[] {
     return [...questions].sort((a, b) => a.position - b.position).map((question) => ({
       id: question.id,
@@ -189,17 +248,28 @@ export class PollRepository {
       answers: this.mapAnswers(question.options ?? []),
     }));
   }
-
+  /**
+   * Maps and sorts the options of a question.
+   * @param options - The database option rows.
+   * @returns The mapped answer options.
+   */
   private mapAnswers(options: OptionRow[]) {
     return [...options]
       .sort((a, b) => a.position - b.position)
       .map((option) => ({ id: option.id, text: option.text, votes: option.votes?.length ?? 0 }));
   }
-
+  /**
+   * Finds a demo survey by identifier.
+   * @param id - The survey identifier.
+   * @returns The matching demo survey or null.
+   */
   private findDemoPoll(id: string): Poll | null {
     return this.demoPolls().find((poll) => poll.id === id) ?? null;
   }
-
+  /**
+   * Creates the collection of demo surveys.
+   * @returns The demo surveys.
+   */
   private demoPolls(): Poll[] {
     return [
       this.demoPoll('1', 'Let’s Plan the Next Team Event Together', 'Team activities', 1),
@@ -209,7 +279,14 @@ export class PollRepository {
       this.demoPoll('5', 'Community ideas for the next meetup', 'Community', -4),
     ];
   }
-
+  /**
+   * Creates one demo survey.
+   * @param id - The survey identifier.
+   * @param title - The survey title.
+   * @param category - The survey category.
+   * @param days - The deadline offset in days.
+   * @returns The demo survey.
+   */
   private demoPoll(id: string, title: string, category: string, days: number): Poll {
     return {
       id,
@@ -221,11 +298,19 @@ export class PollRepository {
       questions: this.demoQuestions(id),
     };
   }
-
+  /**
+   * Creates a demo deadline relative to the current time.
+   * @param days - The deadline offset in days.
+   * @returns The generated ISO timestamp.
+   */
   private demoEnd(days: number): string {
     return new Date(Date.now() + days * 86_400_000).toISOString();
   }
-
+  /**
+   * Creates the demo questions for a survey.
+   * @param id - The survey identifier.
+   * @returns The demo questions.
+   */
   private demoQuestions(id: string): PollQuestion[] {
     return [
       this.demoQuestion(`${id}-q1`, 'Which date would work best for you?', false, ['19.09.2025, Friday', '10.10.2025, Friday', '11.10.2025, Saturday', '31.10.2025, Friday'], [27, 43, 9, 21]),
@@ -234,15 +319,39 @@ export class PollRepository {
       this.demoQuestion(`${id}-q4`, 'How long would you prefer the event to last?', false, ['Half-day', 'Full day', 'Evening only'], [14, 68, 18]),
     ];
   }
-
-  private demoQuestion(id: string, text: string, allowMultiple: boolean, answers: string[], votes: number[]): PollQuestion {
+  /**
+   * Creates one demo question with answer choices.
+   * @param id - The question identifier.
+   * @param text - The question text.
+   * @param allowMultiple - Whether multiple answers are allowed.
+   * @param answers - The answer labels.
+   * @param votes - The initial vote counts.
+   * @returns The demo question.
+   */
+  private demoQuestion(
+    id: string,
+    text: string,
+    allowMultiple: boolean,
+    answers: string[],
+    votes: number[],
+  ): PollQuestion {
     return { id, text, allowMultiple, answers: this.demoAnswers(`${id}-a`, answers, votes) };
   }
-
+  /**
+   * Creates answer models for demo data.
+   * @param prefix - The answer identifier prefix.
+   * @param texts - The answer labels.
+   * @param votes - The initial vote counts.
+   * @returns The demo answer models.
+   */
   private demoAnswers(prefix: string, texts: string[], votes: number[]) {
     return texts.map((text, index) => ({ id: `${prefix}-${index}`, text, votes: votes[index] ?? 0 }));
   }
-
+  /**
+   * Creates a demo survey from form input.
+   * @param input - The survey data to convert.
+   * @returns The generated demo survey.
+   */
   private createDemoPoll(input: CreatePollInput): Poll {
     return {
       id: crypto.randomUUID(),
@@ -254,7 +363,11 @@ export class PollRepository {
       questions: this.createDemoQuestions(input.questions),
     };
   }
-
+  /**
+   * Creates demo questions from the supplied input.
+   * @param questions - The question input data.
+   * @returns The generated question models.
+   */
   private createDemoQuestions(questions: CreatePollInput['questions']): PollQuestion[] {
     return questions.map((question) => ({
       id: crypto.randomUUID(),

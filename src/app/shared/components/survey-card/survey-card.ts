@@ -14,6 +14,10 @@ export class SurveyCardComponent {
   readonly highlight = input(false);
   readonly past = input(false);
 
+  /**
+   * Creates a human-readable deadline label for the survey card.
+   * @returns The formatted deadline label.
+   */
   daysLabel(): string {
     const endDate = this.poll().endDate;
     if (!endDate) return 'No deadline';

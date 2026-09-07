@@ -18,6 +18,9 @@ export class App {
   readonly toast = inject(ToastService);
   readonly store = inject(PollStoreService);
 
+  /**
+   * Handles the successful publication of a survey.
+   */
   onPublished(): void {
     this.ui.closeCreateSurvey();
     this.store.clearError();
