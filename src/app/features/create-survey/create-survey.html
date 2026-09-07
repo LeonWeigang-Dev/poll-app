@@ -55,7 +55,7 @@
                 <div class="category-field">
                   <div class="filter-select">
                     <span>{{ form.controls.category.value || 'Choose category' }}</span>
-                    <img class="chevron" src="/assets/desktop/arrow_drop_down.svg" alt="Chevron">
+                    <img class="chevron" src="./assets/desktop/arrow_drop_down.svg" alt="Chevron">
 
                     <select #selectRef formControlName="category" (change)="selectRef.blur()"
                       aria-label="Choose category">
@@ -136,7 +136,7 @@
             </label>
 
             <button class="add-question-btn" type="button" (click)="addQuestion()">
-              Add next question <img src="assets/desktop/add_circle.svg" alt="plus icon">
+              Add next question <img src=".assets/desktop/add_circle.svg" alt="plus icon">
             </button>
           </div>
 
@@ -145,7 +145,7 @@
 
       <div class="modal-foot">
         <button class="publish" [disabled]="saving()" type="submit">
-          {{ saving() ? 'Publishing…' : 'Publish'}} <img class="check-icon" src="/assets/desktop/check.svg"
+          {{ saving() ? 'Publishing…' : 'Publish'}} <img class="check-icon" src="./assets/desktop/check.svg"
             alt="Check icon">
         </button>
 

@@ -1,6 +1,6 @@
 <div class="filter">
   <span>Sort by categories</span>
-  <img class="chevron" src="assets/desktop/arrow_drop_down.svg" alt="Chevron">
+  <img class="chevron" src="./assets/desktop/arrow_drop_down.svg" alt="Chevron">
 
   <select #selectRef [value]="selected()" (change)="changed.emit(value($event)); selectRef.blur()"
     aria-label="Filter by category">
