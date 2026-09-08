@@ -29,9 +29,6 @@
                   <img class="trash-icon" src="./assets/desktop/icon-delete.svg" alt="Delete Btn">
                 </button>
               </div>
-              @if (form.controls.title.touched && form.controls.title.hasError('required')) {
-              <small>Survey name is required.</small>
-              }
             </label>
           </div>
 
@@ -123,7 +120,8 @@
               <div class="add-answer-row">
                 <button class="add-answer-btn" type="button" (click)="addAnswer(questionIndex)"
                   [disabled]="answerControls(questionIndex).length >= 6">
-                  Add answer +
+                  Add answer
+                  <img src="./assets/desktop/white_add_circle.svg" alt="white plus button">
                 </button>
                 <!-- <span class="add-answer-hint">You can add up to 6 answer fields.</span> -->
               </div>
@@ -131,12 +129,17 @@
             }
             <div class="add-q-group">
               <button class="add-question-btn" type="button" (click)="addQuestion()">
-                Add next question +
+                Add next question
+                <img src="./assets/desktop/white_add_circle.svg" alt="white plus button">
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      @if (validationErrorMessage) {
+      <small>{{ validationErrorMessage }}</small>
+      }
 
       <div class="modal-foot">
         <button class="publish" [disabled]="saving()" type="submit">

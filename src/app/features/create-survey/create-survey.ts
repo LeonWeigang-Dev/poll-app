@@ -44,6 +44,40 @@ export class CreateSurveyComponent {
   }
 
   /**
+   * Evaluates all form controls and returns the first relevant validation error message.
+   * @returns The active error message or null if the form is valid/untouched.
+   */
+  get validationErrorMessage(): string | null {
+    if (!this.form.touched) return null;
+
+    if (this.form.controls.title.hasError('required')) {
+      return 'Survey name is required.';
+    }
+
+    if (this.form.controls.endDate.hasError('pastDate')) {
+      return 'End date must be in the future.';
+    }
+
+    for (let qIndex = 0; qIndex < this.questions.length; qIndex++) {
+      const questionGroup = this.questions.at(qIndex);
+      if (questionGroup.controls.text.hasError('required')) {
+        return `Question ${qIndex + 1} title is required.`;
+      }
+
+      const answersArray = questionGroup.controls.answers;
+      for (let aIndex = 0; aIndex < answersArray.length; aIndex++) {
+        const answerControl = answersArray.at(aIndex);
+        if (answerControl.hasError('required')) {
+          const prefix = ['A', 'B', 'C', 'D', 'E', 'F'][aIndex] ?? `${aIndex + 1}`;
+          return `Question ${qIndex + 1}, Answer ${prefix} is required.`;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Returns the question form array.
    * @returns The survey questions form array.
    */

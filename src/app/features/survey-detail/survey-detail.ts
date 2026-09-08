@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RealtimeChannel } from '@supabase/supabase-js';
@@ -32,6 +32,7 @@ export class SurveyDetailComponent implements OnInit, OnDestroy {
   readonly error = signal('');
   readonly isPast = signal(false);
   private channel: RealtimeChannel | null = null;
+  private location: Location = inject(Location);
 
   /**
    * Controls the visibility state of the results panel in the mobile view (from 1024px).
@@ -77,6 +78,15 @@ export class SurveyDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     document.body.classList.add('survey-detail-page-active');
   }
+
+  /**
+   * Navigates back to the previous page in the browser history.
+   * If no history is available, it navigates to the root route.
+   * This method is triggered by the "Back" button in the survey detail view.
+   */
+  goBack() {
+  this.location.back();
+}
 
   /**
    * Lifecycle hook that is called when the component is destroyed.

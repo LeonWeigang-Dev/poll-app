@@ -384,6 +384,9 @@ textarea {
 }
 
 .add-answer-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   border: 0;
   background: transparent;
   color: #fff;
@@ -558,8 +561,12 @@ small,
     border-radius: 0 50px 0 0;
   }
 
+  .desc-group {
+    width: 100%;
+  }
+
   .badge {
-    width: auto;
+    width: fit-content;
   }
 
   .modal-head {
@@ -614,9 +621,19 @@ small,
     gap: 32px;
   }
 
-  .name-group { order: 1; }
-  .date-cat-group { order: 2; width: 100%; }
-  .desc-group { order: 3; }
+  .name-group {
+    order: 1;
+  }
+
+  .date-cat-group {
+    order: 2;
+    width: 100%;
+  }
+
+  .desc-group {
+    order: 3;
+  }
+
   .questions-group {
     order: 4;
     display: flex;
@@ -631,6 +648,7 @@ small,
   }
 
   .question-card {
+    width: 100%;
     gap: 20px;
   }
 
@@ -675,8 +693,7 @@ small,
   }
 
   .publish {
-    width: 100%;
-    padding: 14px;
+    background-color: #FFB770;
 
     .check-icon {
       display: flex;
@@ -696,5 +713,102 @@ small,
     span {
       font-size: 22px;
     }
+  }
+}
+
+@media (max-width: 375px) {
+  .form-card {
+    background: #3c2a42;
+    padding: 14px;
+    margin-bottom: 20px;
+    border-radius: 5px 70px 5px 5px;
+  }
+
+  label {
+    font-size: 13px;
+    gap: 8px;
+  }
+
+  .field-with-icon {
+    width: 100%;
+  }
+}
+
+@media (max-width: 321px) {
+  .overlay {
+    padding: 12px 8px;
+  }
+
+  .modal {
+    padding: 20px 14px;
+    border-radius: 0 80px 0 0;
+  }
+
+  .modal-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "badge cancel"
+      "title title";
+    row-gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .head-left {
+    display: contents;
+  }
+
+  .badge {
+    grid-area: badge;
+  }
+
+  .modal-head h1 {
+    grid-area: title;
+    font-size: 28px;
+  }
+
+  .cancel {
+    grid-area: cancel;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    margin-right: 20px;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  .form-card {
+    padding: 16px 12px;
+    border-radius: 5px 35px 5px 5px;
+  }
+
+  .field-with-icon span {
+    padding-right: 28px;
+  }
+
+  .answer-row {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+
+    .icon-btn {
+      position: absolute;
+      top: -2px;
+      right: 0;
+    }
+  }
+
+  input,
+  textarea,
+  .filter-select,
+  .multi-choice span,
+  .answer-prefix,
+  .question-head,
+  .add-answer-btn,
+  .add-question-btn {
+    font-size: 14px;
   }
 }

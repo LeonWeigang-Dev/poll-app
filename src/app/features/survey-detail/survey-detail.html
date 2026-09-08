@@ -14,9 +14,12 @@
   } @else {
   <section class="detail-grid">
     <article class="survey-panel">
-
-      <span class="meta-badge">{{ isPast() ? 'Published' : voted() ? 'Completed' : 'Published' }}</span>
-
+      <div class="meta-top-row">
+        <span class="meta-badge">{{ isPast() ? 'Published' : voted() ? 'Completed' : 'Published' }}</span>
+        <button class="cancel-survey-btn" type="button" (click)="goBack()">
+          <span class="close-x">✕</span>
+        </button>
+      </div>
       <div class="meta">
         @if (poll()!.endDate) { <span>Ends on {{ poll()!.endDate | date:'dd.MM.yyyy' }}</span> }
         <span>Category: {{ poll()!.category }}</span>
