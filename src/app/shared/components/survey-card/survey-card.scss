@@ -1,7 +1,7 @@
 .survey-card {
   display: flex;
-  min-height: 112px;
-  max-height: 280px;
+  min-height: 150px;
+  max-height: 200px;
   flex-direction: column;
   gap: 8px;
   padding: 13px 15px 12px;
@@ -14,6 +14,7 @@
 }
 
 .survey-card h3 {
+  font-size: 20px;
   font-family: 'Mulish';
   font-weight: 500;
 }
@@ -27,7 +28,7 @@
   width: 100%;
   height: 100%;
   min-height: 250px;
-  border-radius: 0 40px 0 0;
+  border-radius: 0 80px 0 0;
   background: #faf5fc;
   color: #33243a;
   max-width: 300px;

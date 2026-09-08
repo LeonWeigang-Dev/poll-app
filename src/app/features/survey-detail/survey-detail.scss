@@ -55,20 +55,20 @@ body.survey-detail-page-active {
   justify-content: center;
   border-radius: 10px;
   font-size: 18px;
-
-  span {
-    margin-left: 5px;
-  }
+  font-weight: 700;
+  transition: background-color 0.2s ease, color 0.2s ease;
 
   .plus-icon {
-    display: none;
     width: 24px;
     height: 24px;
-    flex-shrink: 0;
+    max-width: 0;
     margin-left: 0;
     opacity: 0;
+    flex-shrink: 0;
     overflow: hidden;
-    transition: width .2s ease, margin-left .2s ease, opacity .2s ease;
+    transition: max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 1s ease-in-out;
   }
 
   &:hover {
@@ -76,9 +76,8 @@ body.survey-detail-page-active {
     color: #221227;
 
     .plus-icon {
-      display: flex;
-      width: 24px;
-      margin-left: 5px;
+      max-width: 24px;
+      margin-left: 6px;
       opacity: 1;
     }
   }
@@ -99,13 +98,14 @@ body.survey-detail-page-active {
 
 .meta-badge {
   display: inline-block;
-  padding: 6px 14px;
-  background: #FFC085;
+  padding: 4px 10px;
+  background: #FFB770;
   color: #31233a;
-  font-size: 14px;
+  font-family: 'Mulish', sans-serif;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 16px;
-  border-radius: 5px 20px 5px 5px;
+  border-radius: 0px 20px 0px 0px;
 }
 
 .meta {
@@ -175,8 +175,14 @@ body.survey-detail-page-active {
 
 .options {
   display: grid;
-  gap: 14px;
+  gap: 6px;
   counter-reset: option-counter;
+
+  .answer-text {
+    font-family: 'Mulish';
+    font-weight: 500;
+    font-size: 16px;
+  }
 
   button {
     display: flex;
