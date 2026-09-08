@@ -145,15 +145,6 @@ export class CreateSurveyComponent {
   }
 
   /**
-   * Returns the current index for Angular tracking.
-   * @param index - The question index.
-   * @returns The supplied index.
-   */
-  trackQuestion(index: number): number {
-    return index;
-  }
-
-  /**
    * Marks every invalid form field as touched.
    */
   private validateForm(): void {

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -17,7 +17,7 @@ import { ResultsPanelComponent } from '../../shared/components/results-panel/res
   templateUrl: './survey-detail.html',
   styleUrl: './survey-detail.scss',
 })
-export class SurveyDetailComponent {
+export class SurveyDetailComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly repo = inject(PollRepository);
   private readonly store = inject(PollStoreService);
@@ -34,12 +34,64 @@ export class SurveyDetailComponent {
   private channel: RealtimeChannel | null = null;
 
   /**
+   * Controls the visibility state of the results panel in the mobile view (from 1024px).
+   * @default false
+   */
+  readonly resultsOpen = signal(false);
+
+  /**
+   * Generates a temporary copy of the survey data (Questions and Answers),
+   * where currently selected answers are locally added to the existing votes.
+   * This creates a live-result effect without hitting the database before the final submit.
+   */
+  readonly liveQuestions = computed<PollQuestion[]>(() => {
+    const currentPoll = this.poll();
+    if (!currentPoll) return [];
+
+    return currentPoll.questions.map((q) => {
+      const updatedAnswers = q.answers.map((a) => {
+        const isSelected = this.optionSelected(q.id, a.id);
+        return {
+          ...a,
+          votes: a.votes + (isSelected ? 1 : 0),
+        };
+      });
+      return { ...q, answers: updatedAnswers };
+    });
+  });
+
+  /**
    * Registers route loading and realtime channel cleanup.
    */
   constructor() {
-    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef))
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => void this.load(params.get('id')));
     this.destroyRef.onDestroy(() => void this.repo.removeChannel(this.channel));
+  }
+
+  /**
+   * Lifecycle hook that is called after data-bound properties are initialized.
+   * Adds the 'survey-detail-page-active' class to the <body> to swap header logo and background color via CSS.
+   */
+  ngOnInit(): void {
+    document.body.classList.add('survey-detail-page-active');
+  }
+
+  /**
+   * Lifecycle hook that is called when the component is destroyed.
+   * Removes the 'survey-detail-page-active' class from the <body> to restore global header styles.
+   */
+  ngOnDestroy(): void {
+    document.body.classList.remove('survey-detail-page-active');
+  }
+
+  /**
+   * Toggles the visibility of the results panel in the mobile view.
+   * Triggered by the "Open/Close results" button.
+   */
+  toggleResults(): void {
+    this.resultsOpen.update((open) => !open);
   }
 
   /**

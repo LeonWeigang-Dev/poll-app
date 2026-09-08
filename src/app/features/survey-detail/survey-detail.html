@@ -1,7 +1,10 @@
 <div class="detail-page">
   <div class="detail-top">
     <!-- <a routerLink="/" class="back">← Back to surveys</a> -->
-    
+    <button class="create" type="button" (click)="openCreate()">
+      Create survey <span></span>
+      <img class="plus-icon" src="./assets/desktop/icon-plus-circle.svg" alt="Plus icon">
+    </button>
   </div>
 
   @if (loading()) {
@@ -60,7 +63,19 @@
       </button>
     </article>
 
-    <app-results-panel [questions]="poll()!.questions" />
+    <aside class="results-column">
+      <div class="results-mobile-toggle">
+        <button type="button" class="toggle-btn" (click)="toggleResults()" [class.is-open]="resultsOpen()">
+          {{ resultsOpen() ? 'Close results' : 'See results' }}
+          <span class="triangle">▼</span>
+        </button>
+      </div>
+
+      <div class="results-wrapper" [class.is-open]="resultsOpen()">
+        <app-results-panel [questions]="liveQuestions()" />
+      </div>
+    </aside>
+
   </section>
   }
 </div>
