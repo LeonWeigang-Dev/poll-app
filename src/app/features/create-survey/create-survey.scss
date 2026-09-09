@@ -12,6 +12,7 @@
   padding: 20px;
   background: rgba(22, 14, 26, 0.75);
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .modal {
@@ -19,6 +20,7 @@
   max-height: calc(100vh - 40px);
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior: contain;
   padding: 28px 32px;
   border-radius: 10px 80px 10px 10px;
   background: #2f2034;
@@ -194,6 +196,10 @@ label {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+
+  &.invalid {
+    box-shadow: 0 0 0 2px #e78383;
+  }
 
   select {
     position: absolute;

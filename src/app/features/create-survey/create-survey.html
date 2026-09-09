@@ -61,12 +61,14 @@
 
               <label>
                 <div class="category-field">
-                  <div class="filter-select">
-                    <span>Choose category</span>
+                  <div class="filter-select"
+                    [class.invalid]="form.controls.category.touched && form.controls.category.invalid">
+                    <span>{{ form.controls.category.value || 'Choose category' }}</span>
                     <img class="chevron" src="./assets/desktop/arrow_drop_down.svg" alt="Chevron">
 
                     <select #selectRef formControlName="category" (change)="selectRef.blur()"
                       aria-label="Choose category">
+                      <!-- <option value="" disabled selected>Choose category</option> -->
                       @for (category of categories; track category) {
                       <option [value]="category">{{ category }}</option>
                       }
